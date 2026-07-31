@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+:root {
+  --font-sans: var(--font-inter), var(--font-vazirmatn), ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+/* Node titles / formulas may contain Persian (RTL) text.
+   dir="auto" on the element + plaintext bidi keeps each string
+   in its natural direction without flipping the surrounding UI. */
+.bidi-plaintext {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
