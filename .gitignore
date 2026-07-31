@@ -1,0 +1,16 @@
+node_modules/
+.next/
+dist/
+coverage/
+
+# local database
+apps/web/data/
+
+# env
+.env
+.env.local
+
+# misc
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
