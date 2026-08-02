@@ -1,8 +1,12 @@
 @import "tailwindcss";
+@import "./fonts.css";
 
-:root {
-  --font-sans: var(--font-inter), var(--font-vazirmatn), ui-sans-serif, system-ui,
-    sans-serif;
+/* Tailwind v4 derives both the `font-sans` utility and the document default
+   from the theme, so setting it here is enough to put Dana everywhere.
+   Dana has no em dash / currency glyphs beyond the basics, so the system
+   fallbacks stay in the stack for AI- and user-generated content. */
+@theme {
+  --font-sans: "Dana", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 }
 

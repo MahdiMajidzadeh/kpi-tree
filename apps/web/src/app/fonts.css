@@ -1,0 +1,210 @@
+/* Dana — self-hosted (apps/web/public/fonts, sourced from /fonts at the repo root).
+   Covers Latin + Persian/Arabic and both digit sets, so it replaces the previous
+   Inter + Vazirmatn pairing with a single family.
+
+   Notes:
+   - `ultrabold` ships with the same usWeightClass (800) as `extrabold` but is a
+     distinct, heavier cut, so it is mapped to 850 to keep both reachable.
+   - Only regular/medium/demibold are preloaded (see app/layout.tsx); every other
+     cut is fetched lazily by the browser, on first use.
+   - `font-display: swap` keeps first paint unblocked. */
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-thin.woff2") format("woff2"),
+    url("/fonts/dana-thin.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-thinitalic.woff2") format("woff2"),
+    url("/fonts/dana-thinitalic.woff") format("woff");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-extralight.woff2") format("woff2"),
+    url("/fonts/dana-extralight.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-extralightitalic.woff2") format("woff2"),
+    url("/fonts/dana-extralightitalic.woff") format("woff");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-light.woff2") format("woff2"),
+    url("/fonts/dana-light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-lightitalic.woff2") format("woff2"),
+    url("/fonts/dana-lightitalic.woff") format("woff");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-regular.woff2") format("woff2"),
+    url("/fonts/dana-regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-regularitalic.woff2") format("woff2"),
+    url("/fonts/dana-regularitalic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-medium.woff2") format("woff2"),
+    url("/fonts/dana-medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-mediumitalic.woff2") format("woff2"),
+    url("/fonts/dana-mediumitalic.woff") format("woff");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-demibold.woff2") format("woff2"),
+    url("/fonts/dana-demibold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-demibolditalic.woff2") format("woff2"),
+    url("/fonts/dana-demibolditalic.woff") format("woff");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-bold.woff2") format("woff2"),
+    url("/fonts/dana-bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-bolditalic.woff2") format("woff2"),
+    url("/fonts/dana-bolditalic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-extrabold.woff2") format("woff2"),
+    url("/fonts/dana-extrabold.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-extrabolditalic.woff2") format("woff2"),
+    url("/fonts/dana-extrabolditalic.woff") format("woff");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-ultrabold.woff2") format("woff2"),
+    url("/fonts/dana-ultrabold.woff") format("woff");
+  font-weight: 850;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-ultrabolditalic.woff2") format("woff2"),
+    url("/fonts/dana-ultrabolditalic.woff") format("woff");
+  font-weight: 850;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-black.woff2") format("woff2"),
+    url("/fonts/dana-black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dana";
+  src:
+    url("/fonts/dana-blackitalic.woff2") format("woff2"),
+    url("/fonts/dana-blackitalic.woff") format("woff");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}

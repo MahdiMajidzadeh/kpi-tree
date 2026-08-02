@@ -19,6 +19,7 @@ import { useEditor, type EditorState } from "@/stores/tree-editor-store";
 import { MetricNode, type MetricFlowNode } from "./MetricNode";
 import { TypedEdge, type TypedFlowEdge } from "./TypedEdge";
 import { validateConnection } from "@/lib/tree/connect-guards";
+import { NODE_HEIGHT, NODE_WIDTH, NS_HEIGHT, NS_WIDTH } from "./layout";
 
 const nodeTypes = { metric: MetricNode };
 const edgeTypes = { typed: TypedEdge };
@@ -29,6 +30,7 @@ export function TreeCanvas({ store }: { store: StoreApi<EditorState> }) {
   const violations = useEditor(store, (s) => s.violations);
   const insights = useEditor(store, (s) => s.insights);
   const focusRequest = useEditor(store, (s) => s.focusRequest);
+  const selectedNodeIds = useEditor(store, (s) => s.selection.nodeIds);
   const reactFlow = useReactFlow();
 
   // node id → highest active severity (rules client-side + server insights)
@@ -48,15 +50,29 @@ export function TreeCanvas({ store }: { store: StoreApi<EditorState> }) {
     return out;
   }, [violations, insights]);
 
+  // React Flow is controlled here, so `selected` has to be fed back in from the
+  // store — it never applies selection changes to the nodes prop on its own.
+  const selectedSet = useMemo(() => new Set(selectedNodeIds), [selectedNodeIds]);
+
   const rfNodes = useMemo<MetricFlowNode[]>(
     () =>
-      Object.values(nodes).map((node) => ({
-        id: node.id,
-        type: "metric" as const,
-        position: node.position ?? { x: 0, y: 0 },
-        data: { node, severity: severityByNode.get(node.id) ?? null },
-      })),
-    [nodes, severityByNode],
+      Object.values(nodes).map((node) => {
+        const isNorthStar = node.level === "north_star";
+        return {
+          id: node.id,
+          type: "metric" as const,
+          position: node.position ?? { x: 0, y: 0 },
+          selected: selectedSet.has(node.id),
+          // MetricNode renders at these exact sizes. Declaring them keeps React
+          // Flow's `nodeHasDimensions` true across node-object rebuilds — without
+          // them, rebuilding drops `measured` and the node is briefly rendered
+          // `visibility: hidden`, which also makes it untargetable by clicks.
+          width: isNorthStar ? NS_WIDTH : NODE_WIDTH,
+          height: isNorthStar ? NS_HEIGHT : NODE_HEIGHT,
+          data: { node, severity: severityByNode.get(node.id) ?? null },
+        };
+      }),
+    [nodes, severityByNode, selectedSet],
   );
 
   const rfEdges = useMemo<TypedFlowEdge[]>(
@@ -153,6 +169,25 @@ export function TreeCanvas({ store }: { store: StoreApi<EditorState> }) {
     [store],
   );
 
+  // Clicking a node opens it in the sidebar. This is wired explicitly rather
+  // than relying on the `select` change above, so a click still reopens the
+  // panel for a node that is already selected.
+  const onNodeClick = useCallback(
+    (event: React.MouseEvent, node: FlowNode) => {
+      const state = store.getState();
+      if (event.metaKey || event.ctrlKey || event.shiftKey) return; // multi-select
+      state.setSelection({ nodeIds: [node.id], edgeIds: [] });
+      state.setEditingNode(node.id);
+    },
+    [store],
+  );
+
+  const onPaneClick = useCallback(() => {
+    const state = store.getState();
+    state.setSelection({ nodeIds: [], edgeIds: [] });
+    state.setEditingNode(null);
+  }, [store]);
+
   const onNodeContextMenu = useCallback(
     (event: React.MouseEvent, node: FlowNode) => {
       event.preventDefault();
@@ -199,6 +234,8 @@ export function TreeCanvas({ store }: { store: StoreApi<EditorState> }) {
       onEdgesChange={onEdgesChange}
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
+      onNodeClick={onNodeClick}
+      onPaneClick={onPaneClick}
       onNodeContextMenu={onNodeContextMenu}
       onConnect={onConnect}
       isValidConnection={isValidConnection}

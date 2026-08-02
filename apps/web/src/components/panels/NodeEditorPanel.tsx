@@ -49,7 +49,7 @@ export function NodeEditorPanel({ store }: { store: StoreApi<EditorState> }) {
   };
 
   return (
-    <div className="flex flex-col gap-3 border-b border-slate-200 p-4">
+    <div className="flex max-h-[60%] shrink-0 flex-col gap-3 overflow-y-auto border-b border-slate-200 p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-700">Metric</h2>
         <button

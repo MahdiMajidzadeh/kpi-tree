@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Vazirmatn } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const vazirmatn = Vazirmatn({
-  subsets: ["arabic"],
-  variable: "--font-vazirmatn",
-});
+/* Dana is self-hosted from public/fonts (see app/fonts.css). Only the cuts the
+   UI actually leans on are preloaded; the rest of the family loads on demand. */
+const PRELOADED_FONTS = [
+  "/fonts/dana-regular.woff2",
+  "/fonts/dana-medium.woff2",
+  "/fonts/dana-demibold.woff2",
+];
 
 export const metadata: Metadata = {
   title: "KPI Tree Intelligence",
@@ -23,9 +20,19 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${vazirmatn.variable}`}>
-        {children}
-      </body>
+      <head>
+        {PRELOADED_FONTS.map((href) => (
+          <link
+            key={href}
+            rel="preload"
+            href={href}
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+        ))}
+      </head>
+      <body>{children}</body>
     </html>
   );
 }

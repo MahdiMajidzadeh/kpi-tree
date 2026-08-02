@@ -40,7 +40,7 @@ function MetricNodeComponent({ data, selected }: NodeProps<MetricFlowNode>) {
         isNorthStar
           ? "border-indigo-700 bg-indigo-600 text-white shadow-md"
           : "border-slate-200 bg-white",
-        selected ? "shadow-lg" : "",
+        selected ? "shadow-lg ring-2 ring-indigo-500 ring-offset-1" : "",
       ].join(" ")}
       style={{
         width: size.width,
