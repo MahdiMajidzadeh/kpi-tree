@@ -15,6 +15,7 @@ const TASKS: { key: keyof AppSettings["models"]; label: string; hint: string }[]
   { key: "deepAnalysis", label: "Deep analysis", hint: "On-demand full-tree review" },
   { key: "realtime", label: "Real-time insight", hint: "Runs after every edit burst — keep it fast" },
   { key: "suggestions", label: "Metric suggestions", hint: "3–5 candidates per request" },
+  { key: "chat", label: "Chat", hint: "Conversational Q&A in the editor sidebar" },
 ];
 
 export default function SettingsPage() {

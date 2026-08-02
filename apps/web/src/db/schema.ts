@@ -126,6 +126,24 @@ export const snapshots = sqliteTable(
   (t) => [index("snapshots_tree_idx").on(t.treeId)],
 );
 
+export const chatMessages = sqliteTable(
+  "chat_messages",
+  {
+    seq: integer("seq").primaryKey({ autoIncrement: true }),
+    id: text("id").notNull(),
+    treeId: text("tree_id")
+      .notNull()
+      .references(() => trees.id, { onDelete: "cascade" }),
+    role: text("role").notNull(),
+    content: text("content").notNull(),
+    toolCalls: text("tool_calls").notNull().default("[]"),
+    suggestionIds: text("suggestion_ids").notNull().default("[]"),
+    status: text("status").notNull().default("complete"),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [index("chat_tree_idx").on(t.treeId, t.seq)],
+);
+
 export const settings = sqliteTable("settings", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),

@@ -4,7 +4,7 @@ import type BetterSqlite3 from "better-sqlite3";
  * Boot-time DDL. Lightweight versioning via PRAGMA user_version — bump
  * DB_VERSION and append a step when the schema changes.
  */
-export const DB_VERSION = 1;
+export const DB_VERSION = 2;
 
 const DDL = `
 CREATE TABLE IF NOT EXISTS trees (
@@ -91,6 +91,19 @@ CREATE TABLE IF NOT EXISTS snapshots (
   created_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS snapshots_tree_idx ON snapshots(tree_id);
+
+CREATE TABLE IF NOT EXISTS chat_messages (
+  seq INTEGER PRIMARY KEY AUTOINCREMENT,
+  id TEXT NOT NULL,
+  tree_id TEXT NOT NULL REFERENCES trees(id) ON DELETE CASCADE,
+  role TEXT NOT NULL,
+  content TEXT NOT NULL,
+  tool_calls TEXT NOT NULL DEFAULT '[]',
+  suggestion_ids TEXT NOT NULL DEFAULT '[]',
+  status TEXT NOT NULL DEFAULT 'complete',
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS chat_tree_idx ON chat_messages(tree_id, seq);
 
 CREATE TABLE IF NOT EXISTS settings (
   key TEXT PRIMARY KEY,

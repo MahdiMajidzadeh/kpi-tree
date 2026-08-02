@@ -10,6 +10,7 @@ export const AppSettingsSchema = z.object({
       deepAnalysis: z.string().min(1),
       realtime: z.string().min(1),
       suggestions: z.string().min(1),
+      chat: z.string().min(1).default("claude-sonnet-5"),
     })
     .default({
       // Doc §FR-6: strongest model for generation + deep analysis,
@@ -18,6 +19,7 @@ export const AppSettingsSchema = z.object({
       deepAnalysis: "claude-opus-5",
       realtime: "claude-haiku-4-5-20251001",
       suggestions: "claude-sonnet-5",
+      chat: "claude-sonnet-5",
     }),
   debounceMs: z.number().int().min(250).max(10_000).default(1500),
   realtimeEnabled: z.boolean().default(true),

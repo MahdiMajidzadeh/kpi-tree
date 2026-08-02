@@ -49,6 +49,13 @@ export function resumeIdFor(treeId: string): string | undefined {
   return row.sessionId ?? undefined;
 }
 
+/** Side-effect-free mirror of `resumeIdFor`'s reset condition: true when the
+ *  next query starts a fresh session, so callers can re-ground the agent. */
+export function willStartFreshSession(treeId: string): boolean {
+  const row = getSessionRow(treeId);
+  return !row.sessionId || row.turnCount >= getSettings().sessionTurnLimit;
+}
+
 export function storeSessionId(treeId: string, sessionId: string): void {
   const db = getDb();
   db.update(agentSessions)

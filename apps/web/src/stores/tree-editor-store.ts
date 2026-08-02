@@ -15,6 +15,7 @@ import type {
   SuggestedFix,
   Tree,
 } from "@kti/schema";
+import type { ChatMessage, ChatToolCall } from "@/lib/ai/chat-types";
 import { applyEvents, type TreeContent } from "@/lib/tree/apply-event";
 import { invertEvents } from "@/lib/tree/invert-event";
 import {
@@ -38,6 +39,16 @@ export interface PendingConnection {
   source: string;
   target: string;
   screen: { x: number; y: number };
+}
+
+export type PanelTab = "insights" | "suggestions" | "chat";
+
+/** The assistant turn currently streaming in, before it becomes a
+ *  persisted ChatMessage. */
+export interface ChatDraft {
+  state: "queued" | "thinking" | "streaming";
+  text: string;
+  toolCalls: ChatToolCall[];
 }
 
 export type SaveState = "saved" | "saving" | "error";
@@ -67,7 +78,11 @@ export interface EditorState {
   connectionError: { reason: string; at: number } | null;
   focusRequest: { nodeIds: string[]; nonce: number } | null;
   contextMenu: { nodeId: string; screen: { x: number; y: number } } | null;
-  panelTab: "insights" | "suggestions";
+  panelTab: PanelTab;
+
+  chatMessages: ChatMessage[];
+  chatLoaded: boolean;
+  chatDraft: ChatDraft | null;
 
   undoStack: HistoryEntry[];
   redoStack: HistoryEntry[];
@@ -119,8 +134,14 @@ export interface EditorState {
   dismissInsight(insightId: string): Promise<void>;
   setAnalysisState(state: AnalysisState): void;
   setUsage(usage: { tokensUsed: number; budget: number; costUsd: number }): void;
-  setPanelTab(tab: "insights" | "suggestions"): void;
+  setPanelTab(tab: PanelTab): void;
   setContextMenu(menu: { nodeId: string; screen: { x: number; y: number } } | null): void;
+
+  // chat (FR-9)
+  loadChat(): Promise<void>;
+  sendChatMessage(text: string): Promise<void>;
+  stopChat(): void;
+  clearChat(): Promise<void>;
 
   // suggestions (FR-4)
   upsertSuggestion(suggestion: Suggestion): void;
@@ -147,10 +168,32 @@ function lint(state: Pick<EditorState, "nodes" | "edges">): Violation[] {
   });
 }
 
+/** A client-only transcript entry for failures the server never persisted
+ *  (offline, budget exhausted, unreachable). */
+function localChatMessage(
+  treeId: string,
+  role: ChatMessage["role"],
+  content: string,
+  status: ChatMessage["status"] = "complete",
+): ChatMessage {
+  return {
+    id: nanoid(),
+    seq: -Date.now(),
+    treeId,
+    role,
+    content,
+    toolCalls: [],
+    suggestionIds: [],
+    status,
+    createdAt: Date.now(),
+  };
+}
+
 const UNDO_CAP = 100;
 
 export function createTreeEditorStore(tree: Tree, insights: Insight[]): StoreApi<EditorState> {
   let flushing = false;
+  let chatAbort: AbortController | null = null;
 
   return createStore<EditorState>((set, get) => ({
     treeId: tree.id,
@@ -170,6 +213,9 @@ export function createTreeEditorStore(tree: Tree, insights: Insight[]): StoreApi
     focusRequest: null,
     contextMenu: null,
     panelTab: "insights",
+    chatMessages: [],
+    chatLoaded: false,
+    chatDraft: null,
     undoStack: [],
     redoStack: [],
     outbox: [],
@@ -515,7 +561,11 @@ export function createTreeEditorStore(tree: Tree, insights: Insight[]): StoreApi
           next[index] = suggestion;
           return { suggestions: next };
         }
-        return { suggestions: [...s.suggestions, suggestion], panelTab: "suggestions" };
+        // Chat renders its own turn's cards inline — don't yank the PM off it.
+        return {
+          suggestions: [...s.suggestions, suggestion],
+          ...(s.panelTab === "chat" ? {} : { panelTab: "suggestions" as const }),
+        };
       });
     },
 
@@ -718,6 +768,174 @@ export function createTreeEditorStore(tree: Tree, insights: Insight[]): StoreApi
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "resolve" }),
       }).catch(() => {});
+    },
+
+    async loadChat() {
+      if (get().chatLoaded) return;
+      try {
+        const response = await fetch(`/api/trees/${get().treeId}/chat`);
+        if (!response.ok) return;
+        const data = (await response.json()) as { messages: ChatMessage[] };
+        set({ chatMessages: data.messages, chatLoaded: true });
+      } catch {
+        // transient; the next tab visit retries
+      }
+    },
+
+    /**
+     * One streaming turn: POST the question, consume the SSE frames off the
+     * response body, and reconcile into chatMessages when the turn lands.
+     * Aborting the fetch is what interrupts the agent server-side.
+     */
+    async sendChatMessage(text) {
+      const question = text.trim();
+      if (!question || get().chatDraft) return;
+
+      set({
+        panelTab: "chat",
+        chatDraft: { state: "queued", text: "", toolCalls: [] },
+      });
+      chatAbort = new AbortController();
+
+      const finish = (message?: ChatMessage) => {
+        set((s) => ({
+          chatDraft: null,
+          chatMessages: message
+            ? [...s.chatMessages.filter((m) => m.id !== message.id), message]
+            : s.chatMessages,
+        }));
+      };
+
+      try {
+        const response = await fetch(`/api/trees/${get().treeId}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: question }),
+          signal: chatAbort.signal,
+        });
+
+        if (!response.ok || !response.body) {
+          const data = (await response.json().catch(() => ({}))) as { error?: string };
+          const reason = data.error ?? `Chat failed (HTTP ${response.status}).`;
+          set((s) => ({
+            chatDraft: null,
+            chatMessages: [
+              ...s.chatMessages,
+              localChatMessage(s.treeId, "user", question),
+              localChatMessage(s.treeId, "assistant", reason, "error"),
+            ],
+          }));
+          return;
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          // SSE frames are separated by a blank line.
+          let split = buffer.indexOf("\n\n");
+          while (split >= 0) {
+            const frame = buffer.slice(0, split);
+            buffer = buffer.slice(split + 2);
+            split = buffer.indexOf("\n\n");
+            const dataLine = frame
+              .split("\n")
+              .find((line) => line.startsWith("data:"));
+            if (!dataLine) continue;
+            let payload: Record<string, unknown>;
+            try {
+              payload = JSON.parse(dataLine.slice(5).trim()) as Record<string, unknown>;
+            } catch {
+              continue;
+            }
+            const name = frame
+              .split("\n")
+              .find((line) => line.startsWith("event:"))
+              ?.slice(6)
+              .trim();
+
+            if (name === "user_message") {
+              const message = payload.message as ChatMessage;
+              set((s) => ({ chatMessages: [...s.chatMessages, message] }));
+            } else if (name === "status") {
+              const state = payload.state as "queued" | "thinking";
+              set((s) =>
+                s.chatDraft ? { chatDraft: { ...s.chatDraft, state } } : {},
+              );
+            } else if (name === "delta") {
+              const chunk = payload.text as string;
+              set((s) =>
+                s.chatDraft
+                  ? {
+                      chatDraft: {
+                        ...s.chatDraft,
+                        state: "streaming",
+                        text: s.chatDraft.text + chunk,
+                      },
+                    }
+                  : {},
+              );
+            } else if (name === "tool") {
+              const call = payload.call as ChatToolCall;
+              set((s) =>
+                s.chatDraft
+                  ? {
+                      chatDraft: {
+                        ...s.chatDraft,
+                        toolCalls: [...s.chatDraft.toolCalls, call],
+                      },
+                    }
+                  : {},
+              );
+            } else if (name === "done" || name === "error") {
+              finish(payload.message as ChatMessage);
+            }
+          }
+        }
+        // Stream ended without a terminal frame (server crash, proxy cut).
+        if (get().chatDraft) finish();
+      } catch (error) {
+        const aborted = error instanceof DOMException && error.name === "AbortError";
+        const draft = get().chatDraft;
+        if (aborted) {
+          // The server persists the partial turn; refetch to pick it up.
+          set({ chatDraft: null, chatLoaded: false });
+          void get().loadChat();
+        } else {
+          set((s) => ({
+            chatDraft: null,
+            chatMessages: [
+              ...s.chatMessages,
+              localChatMessage(
+                s.treeId,
+                "assistant",
+                draft?.text.trim() || "Could not reach the server.",
+                "error",
+              ),
+            ],
+          }));
+        }
+      } finally {
+        chatAbort = null;
+      }
+    },
+
+    stopChat() {
+      chatAbort?.abort();
+    },
+
+    async clearChat() {
+      chatAbort?.abort();
+      set({ chatMessages: [], chatDraft: null, chatLoaded: true });
+      try {
+        await fetch(`/api/trees/${get().treeId}/chat`, { method: "DELETE" });
+      } catch {
+        set({ chatLoaded: false });
+      }
     },
 
     async runDeepAnalysis() {
