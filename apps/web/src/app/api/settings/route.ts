@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { claudeCliInfo } from "@/server/ai/cli";
 import { getSettings, updateSettings } from "@/server/settings";
 
 export const dynamic = "force-dynamic";
@@ -7,6 +8,7 @@ export async function GET() {
   return NextResponse.json({
     settings: getSettings(),
     apiKeyPresent: Boolean(process.env.ANTHROPIC_API_KEY),
+    claudeCli: claudeCliInfo(),
   });
 }
 

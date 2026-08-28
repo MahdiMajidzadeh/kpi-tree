@@ -4,6 +4,7 @@ import {
   type Query,
   type SDKMessage,
 } from "@anthropic-ai/claude-agent-sdk";
+import { resolveClaudeCli } from "./cli";
 import { aiStatus, markOffline, markReady } from "./status";
 import {
   budgetExhausted,
@@ -58,6 +59,9 @@ export async function runAgentQuery(opts: AgentTaskOptions): Promise<AgentTaskRe
 
   const useSession = opts.useSession ?? true;
   const resume = useSession ? resumeIdFor(opts.treeId) : undefined;
+  // Prefer the system-installed Claude Code CLI (and its login) when present;
+  // otherwise the SDK falls back to its own bundled binary.
+  const cliPath = resolveClaudeCli();
 
   const attempt = async (resumeId: string | undefined): Promise<AgentTaskResult> => {
     const q = query({
@@ -75,6 +79,7 @@ export async function runAgentQuery(opts: AgentTaskOptions): Promise<AgentTaskRe
             }
           : { allowedTools: [] }),
         permissionMode: "dontAsk" as const,
+        ...(cliPath ? { pathToClaudeCodeExecutable: cliPath } : {}),
         ...(resumeId ? { resume: resumeId } : {}),
         ...(opts.outputSchema
           ? { outputFormat: { type: "json_schema" as const, schema: opts.outputSchema } }
