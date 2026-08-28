@@ -18,9 +18,16 @@ const TASKS: { key: keyof AppSettings["models"]; label: string; hint: string }[]
   { key: "chat", label: "Chat", hint: "Conversational Q&A in the editor sidebar" },
 ];
 
+interface ClaudeCliInfo {
+  found: boolean;
+  path: string | null;
+  version: string | null;
+}
+
 export default function SettingsPage() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [apiKeyPresent, setApiKeyPresent] = useState<boolean | null>(null);
+  const [claudeCli, setClaudeCli] = useState<ClaudeCliInfo | null>(null);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -29,9 +36,11 @@ export default function SettingsPage() {
       const data = (await response.json()) as {
         settings: AppSettings;
         apiKeyPresent: boolean;
+        claudeCli: ClaudeCliInfo;
       };
       setSettings(data.settings);
       setApiKeyPresent(data.apiKeyPresent);
+      setClaudeCli(data.claudeCli);
     })();
   }, []);
 
@@ -64,24 +73,51 @@ export default function SettingsPage() {
       </div>
 
       <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
-        <h2 className="text-sm font-semibold text-slate-700">Anthropic API</h2>
+        <h2 className="text-sm font-semibold text-slate-700">Claude connection</h2>
         <div className="mt-2 flex items-center gap-2 text-sm">
           <span
             className={`inline-block h-2.5 w-2.5 rounded-full ${
-              apiKeyPresent ? "bg-emerald-500" : "bg-red-500"
+              claudeCli?.found || apiKeyPresent ? "bg-emerald-500" : "bg-red-500"
             }`}
           />
-          {apiKeyPresent ? (
+          {claudeCli?.found ? (
+            <span className="text-slate-600">
+              Claude Code CLI detected
+              {claudeCli.version ? ` (${claudeCli.version})` : ""} at{" "}
+              <code className="text-xs">{claudeCli.path}</code>
+            </span>
+          ) : apiKeyPresent ? (
             <span className="text-slate-600">
               API key detected (<code className="text-xs">ANTHROPIC_API_KEY</code>)
             </span>
           ) : (
             <span className="text-slate-600">
-              No API key — set <code className="text-xs">ANTHROPIC_API_KEY</code> and
-              restart. Everything except AI features keeps working.
+              No Claude credentials — set{" "}
+              <code className="text-xs">ANTHROPIC_API_KEY</code> or log in with the
+              Claude Code CLI. Everything except AI keeps working.
             </span>
           )}
         </div>
+        {!claudeCli?.found && !apiKeyPresent && (
+          <div className="mt-3 rounded-lg bg-slate-50 p-3 text-xs text-slate-600">
+            <p className="font-medium text-slate-700">Install Claude Code:</p>
+            <pre className="mt-1.5 overflow-x-auto rounded bg-slate-900 p-2 text-slate-100">
+              brew install --cask claude-code
+            </pre>
+            <p className="mt-1.5">
+              or{" "}
+              <code className="rounded bg-slate-200 px-1">
+                curl -fsSL https://claude.ai/install.sh | bash
+              </code>
+            </p>
+            <p className="mt-1.5">
+              Then run <code className="rounded bg-slate-200 px-1">claude</code> in a
+              terminal once to log in, and restart the server. Or set{" "}
+              <code className="rounded bg-slate-200 px-1">ANTHROPIC_API_KEY</code> in{" "}
+              <code className="rounded bg-slate-200 px-1">apps/web/.env.local</code>.
+            </p>
+          </div>
+        )}
       </section>
 
       <section className="mt-4 rounded-xl border border-slate-200 bg-white p-5">
