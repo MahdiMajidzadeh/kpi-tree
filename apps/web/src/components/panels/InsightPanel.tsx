@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import type { StoreApi } from "zustand/vanilla";
 import type { Insight, Severity } from "@kti/schema";
 import { SEVERITY_RING } from "@/lib/colors";
@@ -168,7 +169,7 @@ export function InsightPanel({ store }: { store: StoreApi<EditorState> }) {
         </div>
       )}
 
-      <UsageMeter usage={usage} />
+      <UsageMeter usage={usage} store={store} />
     </div>
   );
 }
@@ -196,15 +197,18 @@ function TabButton({
 
 function UsageMeter({
   usage,
+  store,
 }: {
   usage: { tokensUsed: number; budget: number; costUsd: number } | null;
+  store: StoreApi<EditorState>;
 }) {
   if (!usage) return null;
   const fraction = Math.min(usage.tokensUsed / Math.max(usage.budget, 1), 1);
+  const exhausted = usage.tokensUsed >= usage.budget;
   return (
     <div className="border-t border-slate-200 px-4 py-2">
       <div className="flex items-center justify-between text-[10px] text-slate-400">
-        <span>
+        <span className={exhausted ? "font-semibold text-red-600" : undefined}>
           AI session: {Math.round(usage.tokensUsed / 1000)}k /{" "}
           {Math.round(usage.budget / 1000)}k tokens
         </span>
@@ -216,6 +220,24 @@ function UsageMeter({
           style={{ width: `${fraction * 100}%` }}
         />
       </div>
+      {exhausted && (
+        <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px]">
+          <span className="text-slate-500">
+            Budget spent — AI is paused for this tree.
+          </span>
+          <span className="flex shrink-0 items-center gap-2">
+            <Link href="/settings" className="text-slate-400 underline hover:text-slate-600">
+              Raise budget
+            </Link>
+            <button
+              className="rounded bg-red-50 px-2 py-0.5 font-medium text-red-700 hover:bg-red-100"
+              onClick={() => void store.getState().resetAiSession()}
+            >
+              Start fresh session
+            </button>
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,6 @@
+import { getSessionRow } from "@/server/ai/sessions";
 import { subscribe, type TreeEvent } from "@/server/events";
+import { getSettings } from "@/server/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +23,15 @@ export async function GET(request: Request, { params }: Params) {
       };
       controller.enqueue(encoder.encode(`: connected\n\n`));
       unsubscribe = subscribe(treeId, send);
+      // Seed the usage meter with persisted spend so it shows on page load,
+      // not only after the next AI call publishes an update.
+      const row = getSessionRow(treeId);
+      send({
+        type: "usage_update",
+        tokensUsed: row.tokensUsed,
+        budget: getSettings().sessionTokenBudget,
+        costUsd: row.costUsd,
+      });
       heartbeat = setInterval(() => {
         try {
           controller.enqueue(encoder.encode(`: ping\n\n`));

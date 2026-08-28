@@ -152,6 +152,8 @@ export interface EditorState {
   // apply-fix + deep analysis
   applySuggestedFix(insight: Insight): void;
   runDeepAnalysis(): Promise<void>;
+  /** Start a fresh AI session (recovery when the token budget is exhausted). */
+  resetAiSession(): Promise<void>;
 
   // persistence
   flushOutbox(): Promise<void>;
@@ -543,6 +545,21 @@ export function createTreeEditorStore(tree: Tree, insights: Insight[]): StoreApi
 
     setUsage(usage) {
       set({ usage });
+    },
+
+    async resetAiSession() {
+      try {
+        const response = await fetch(`/api/trees/${get().treeId}/session/reset`, {
+          method: "POST",
+        });
+        if (response.ok) {
+          const data = (await response.json()) as { usage: EditorState["usage"] };
+          // SSE echoes the same update; set eagerly so the meter reacts now.
+          set({ usage: data.usage, analysisState: "idle" });
+        }
+      } catch {
+        // Non-fatal: the meter keeps showing the exhausted state.
+      }
     },
 
     setPanelTab(panelTab) {
