@@ -136,12 +136,29 @@ export function Toolbar({ store }: { store: StoreApi<EditorState> }) {
 
 function ExportMenu({ treeId, fileName }: { treeId: string; fileName: string }) {
   const reactFlow = useReactFlow();
+  const [open, setOpen] = useState(false);
   return (
-    <div className="group relative">
-      <button className="rounded-md px-2.5 py-1.5 text-sm text-slate-600 hover:bg-slate-100">
+    <div
+      className="group relative"
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
+      onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
+    >
+      <button
+        className="rounded-md px-2.5 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
         Export ▾
       </button>
-      <div className="invisible absolute right-0 z-30 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg group-hover:visible">
+      <div
+        className={`absolute right-0 z-30 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg group-hover:visible ${
+          open ? "visible" : "invisible"
+        }`}
+        onClick={() => setOpen(false)}
+      >
         {[
           { label: "JSON (canonical)", format: "json" },
           { label: "Markdown", format: "markdown" },
