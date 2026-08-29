@@ -21,7 +21,7 @@ function ToolbarButton({
 }) {
   return (
     <button
-      className="rounded-md px-2.5 py-1.5 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+      className="rounded-md px-2.5 py-1.5 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-50"
       onClick={onClick}
       disabled={disabled}
       title={title}

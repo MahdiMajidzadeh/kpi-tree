@@ -113,7 +113,7 @@ export function SnapshotsDialog({
                 onKeyDown={(e) => e.key === "Enter" && void create()}
               />
               <button
-                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-40"
+                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
                 disabled={!name.trim()}
                 onClick={() => void create()}
               >

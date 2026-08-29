@@ -227,7 +227,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
             </button>
           ) : (
             <button
-              className="shrink-0 rounded-lg bg-indigo-600 px-2.5 py-2 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-40"
+              className="shrink-0 rounded-lg bg-indigo-600 px-2.5 py-2 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
               disabled={!input.trim() || Boolean(blocked)}
               onClick={() => send(input)}
             >
