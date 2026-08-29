@@ -216,11 +216,20 @@ function UsageMeter({
           AI session: {Math.round(usage.tokensUsed / 1000)}k /{" "}
           {Math.round(usage.budget / 1000)}k tokens
         </span>
-        <span>${usage.costUsd.toFixed(2)}</span>
+        <span title="Total AI spend on this tree, across sessions">
+          ${usage.costUsd.toFixed(2)} total
+        </span>
       </div>
-      <div className="mt-1 h-1 overflow-hidden rounded bg-slate-100">
+      <div
+        className="mt-1 h-1 overflow-hidden rounded bg-slate-100"
+        role="progressbar"
+        aria-label="AI session token usage"
+        aria-valuemin={0}
+        aria-valuemax={usage.budget}
+        aria-valuenow={usage.tokensUsed}
+      >
         <div
-          className={`h-full rounded ${fraction > 0.9 ? "bg-red-500" : fraction > 0.7 ? "bg-amber-500" : "bg-indigo-400"}`}
+          className={`h-full rounded ${fraction > 0.9 ? "bg-red-500" : fraction > 0.7 ? "bg-amber-500" : "bg-indigo-600"}`}
           style={{ width: `${fraction * 100}%` }}
         />
       </div>

@@ -323,7 +323,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
               {phase.message ?? "This usually takes under 90 seconds."}
             </p>
             <div className="mx-auto mt-4 h-1.5 w-56 overflow-hidden rounded bg-slate-100">
-              <div className="h-full w-1/3 animate-pulse rounded bg-indigo-500" />
+              <div className="h-full w-1/3 animate-pulse rounded bg-indigo-600" />
             </div>
           </div>
         )}
