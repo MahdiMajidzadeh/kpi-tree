@@ -206,23 +206,23 @@ function TreeCard({
         Updated {new Date(tree.updatedAt).toLocaleString()}
       </div>
       <div
-        className="invisible mt-3 flex gap-1 group-hover:visible"
+        className="mt-3 flex gap-1 border-t border-slate-100 pt-2"
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="rounded px-2 py-1 text-xs text-slate-500 hover:bg-slate-100"
+          className="rounded px-2 py-1.5 text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-600"
           onClick={() => setRenaming(true)}
         >
           Rename
         </button>
         <button
-          className="rounded px-2 py-1 text-xs text-slate-500 hover:bg-slate-100"
+          className="rounded px-2 py-1.5 text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-600"
           onClick={() => void duplicate()}
         >
           Duplicate
         </button>
         <button
-          className="rounded px-2 py-1 text-xs text-red-500 hover:bg-red-50"
+          className="rounded px-2 py-1.5 text-xs text-slate-400 hover:bg-red-50 hover:text-red-600"
           onClick={() => void remove()}
         >
           Delete
