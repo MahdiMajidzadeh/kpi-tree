@@ -170,7 +170,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
             {STARTERS.map((starter) => (
               <button
                 key={starter}
-                className="rounded-lg border border-slate-200 px-2 py-1.5 text-left text-[11px] text-slate-500 hover:border-indigo-300 hover:text-indigo-700"
+                className="rounded-lg border border-slate-200 px-2 py-1.5 text-start text-[11px] text-slate-500 hover:border-indigo-300 hover:text-indigo-700"
                 onClick={() => send(starter)}
               >
                 {starter}
