@@ -192,18 +192,26 @@ function TreeCard({
         </h3>
       )}
       <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
-        <span>{tree.nodeCount} metrics</span>
+        <span>
+          {tree.nodeCount} metric{tree.nodeCount === 1 ? "" : "s"}
+        </span>
         {tree.errorCount > 0 && (
-          <span className="font-medium text-red-600">{tree.errorCount} errors</span>
+          <span className="font-medium text-red-600">
+            {tree.errorCount} error{tree.errorCount === 1 ? "" : "s"}
+          </span>
         )}
         {tree.warningCount > 0 && (
           <span className="font-medium text-amber-600">
-            {tree.warningCount} warnings
+            {tree.warningCount} warning{tree.warningCount === 1 ? "" : "s"}
           </span>
         )}
       </div>
       <div className="mt-1 text-[11px] text-slate-400">
-        Updated {new Date(tree.updatedAt).toLocaleString()}
+        Updated{" "}
+        {new Date(tree.updatedAt).toLocaleString(undefined, {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}
       </div>
       <div
         className="mt-3 flex gap-1 border-t border-slate-100 pt-2"
