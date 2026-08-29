@@ -149,7 +149,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 p-6">
-      <div className="max-h-full w-[560px] overflow-y-auto rounded-xl bg-white p-6 shadow-2xl">
+      <div className="max-h-full w-[560px] max-w-full overflow-y-auto rounded-xl bg-white p-6 shadow-2xl">
         {phase.kind === "form" && (
           <>
             <h2 className="text-lg font-semibold text-slate-900">

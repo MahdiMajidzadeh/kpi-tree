@@ -94,7 +94,7 @@ export function SnapshotsDialog({
       <Dialog.Root open={open} onOpenChange={(o) => !o && onClose()}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-40 bg-black/30" />
-          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[80vh] w-[480px] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl bg-white p-5 shadow-2xl">
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[80vh] w-[480px] max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl bg-white p-5 shadow-2xl">
             <Dialog.Title className="text-base font-semibold text-slate-800">
               Snapshots
             </Dialog.Title>

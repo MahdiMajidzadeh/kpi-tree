@@ -60,7 +60,7 @@ export function Toolbar({ store }: { store: StoreApi<EditorState> }) {
   };
 
   return (
-    <div className="flex items-center gap-1 border-b border-slate-200 bg-white px-3 py-2">
+    <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 bg-white px-3 py-2">
       <Link
         href="/"
         className="rounded-md px-2 py-1.5 text-sm text-slate-500 hover:bg-slate-100"

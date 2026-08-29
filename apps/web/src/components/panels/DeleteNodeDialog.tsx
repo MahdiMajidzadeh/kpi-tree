@@ -30,7 +30,7 @@ export function DeleteNodeDialog({ store }: { store: StoreApi<EditorState> }) {
     >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-black/30" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-2xl">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[420px] max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-2xl">
           <Dialog.Title className="text-base font-semibold text-slate-800">
             Delete{" "}
             <span dir="auto" className="bidi-plaintext">
