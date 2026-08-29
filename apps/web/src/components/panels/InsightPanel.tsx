@@ -47,8 +47,9 @@ function InsightCard({
           </span>
         </div>
         <button
-          className="invisible shrink-0 rounded px-1.5 text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-600 group-hover:visible"
+          className="shrink-0 rounded px-1.5 py-0.5 text-xs text-slate-300 hover:bg-slate-100 hover:text-slate-600"
           title="Dismiss"
+          aria-label="Dismiss insight"
           onClick={(e) => {
             e.stopPropagation();
             void store.getState().dismissInsight(insight.id);
