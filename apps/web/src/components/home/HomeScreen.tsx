@@ -168,8 +168,16 @@ function TreeCard({
 
   return (
     <div
+      role="link"
+      tabIndex={0}
       className="group cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-indigo-300 hover:shadow"
       onClick={() => router.push(`/trees/${tree.id}`)}
+      onKeyDown={(e) => {
+        if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          router.push(`/trees/${tree.id}`);
+        }
+      }}
     >
       {renaming ? (
         <input
@@ -183,13 +191,13 @@ function TreeCard({
           onKeyDown={(e) => e.key === "Enter" && void rename()}
         />
       ) : (
-        <h3
+        <h2
           dir="auto"
           className="bidi-plaintext truncate text-sm font-semibold text-slate-800"
           title={tree.name}
         >
           {tree.name}
-        </h3>
+        </h2>
       )}
       <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
         <span>
