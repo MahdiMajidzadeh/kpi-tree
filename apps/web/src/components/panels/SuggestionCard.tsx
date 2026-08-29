@@ -22,7 +22,7 @@ export function SuggestionCard({
     <div className="rounded-lg border border-slate-200 bg-white p-2.5">
       <div className="flex items-center gap-1.5">
         <span
-          className={`rounded px-1 py-px text-[9px] font-bold ${DIRECTION_STYLE[suggestion.direction].chip}`}
+          className={`rounded px-1 py-px text-[11px] font-bold ${DIRECTION_STYLE[suggestion.direction].chip}`}
         >
           {suggestion.direction === "guard" ? "🛡" : suggestion.level}
         </span>
@@ -36,7 +36,7 @@ export function SuggestionCard({
       <p dir="auto" className="bidi-plaintext mt-1 text-xs leading-snug text-slate-600">
         {suggestion.reason}
       </p>
-      <div className="mt-1 text-[10px] text-slate-400">
+      <div className="mt-1 text-[11px] text-slate-400">
         under <span dir="auto" className="bidi-plaintext">{parentTitle}</span> ·{" "}
         {suggestion.edgeType}
       </div>

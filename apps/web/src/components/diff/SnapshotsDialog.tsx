@@ -140,12 +140,12 @@ export function SnapshotsDialog({
                     <div dir="auto" className="bidi-plaintext truncate text-sm font-medium text-slate-700">
                       {snapshot.name}
                     </div>
-                    <div className="text-[10px] text-slate-400">
+                    <div className="text-[11px] text-slate-400">
                       {new Date(snapshot.createdAt).toLocaleString()}
                     </div>
                   </div>
                   {baseline === snapshot.id ? (
-                    <span className="text-[10px] font-semibold text-indigo-600">
+                    <span className="text-[11px] font-semibold text-indigo-600">
                       baseline
                     </span>
                   ) : baseline ? (

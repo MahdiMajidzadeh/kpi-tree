@@ -76,7 +76,7 @@ export function Toolbar({ store }: { store: StoreApi<EditorState> }) {
         {treeName}
       </span>
       <span
-        className={`ml-1 text-[10px] ${
+        className={`ml-1 text-[11px] ${
           saveState === "saved"
             ? "text-slate-400"
             : saveState === "saving"

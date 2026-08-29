@@ -26,7 +26,7 @@ function ToolChips({ calls, live }: { calls: ChatToolCall[]; live?: boolean }) {
       {grouped.map((chip, index) => (
         <span
           key={`${chip.label}-${index}`}
-          className={`rounded-full bg-slate-100 px-1.5 py-px text-[10px] text-slate-500 ${
+          className={`rounded-full bg-slate-100 px-1.5 py-px text-[11px] text-slate-500 ${
             live && index === grouped.length - 1 ? "animate-pulse" : ""
           }`}
         >
@@ -109,7 +109,7 @@ function MessageBubble({
       >
         <MessageBody text={message.content} />
         {message.status === "interrupted" && (
-          <span className="mt-1 block text-[10px] italic text-slate-400">stopped</span>
+          <span className="mt-1 block text-[11px] italic text-slate-400">stopped</span>
         )}
       </div>
       {mine.length > 0 && (
@@ -200,7 +200,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
       </div>
 
       <div className="border-t border-slate-200 px-4 py-2">
-        {blocked && <p className="mb-1.5 text-[10px] text-amber-700">{blocked}</p>}
+        {blocked && <p className="mb-1.5 text-[11px] text-amber-700">{blocked}</p>}
         <div className="flex items-end gap-1.5">
           <textarea
             ref={inputRef}
@@ -237,7 +237,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
         </div>
         {messages.length > 0 && (
           <button
-            className="mt-1 text-[10px] text-slate-400 hover:text-slate-600"
+            className="mt-1 text-[11px] text-slate-400 hover:text-slate-600"
             title="Clears the transcript and starts a fresh AI session for this tree"
             onClick={() => void store.getState().clearChat()}
           >

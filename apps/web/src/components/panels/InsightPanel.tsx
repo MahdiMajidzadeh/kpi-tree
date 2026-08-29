@@ -34,7 +34,7 @@ function InsightCard({
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-1.5">
           <span
-            className={`shrink-0 rounded px-1 py-px text-[9px] font-bold uppercase tracking-wide ${
+            className={`shrink-0 rounded px-1 py-px text-[11px] font-bold uppercase tracking-wide ${
               insight.source === "rule"
                 ? "bg-slate-200 text-slate-600"
                 : "bg-indigo-100 text-indigo-700"
@@ -141,7 +141,7 @@ export function InsightPanel({ store }: { store: StoreApi<EditorState> }) {
           )}
           {grouped.map((group) => (
             <div key={group.severity}>
-              <div className="mb-1 mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <div className="mb-1 mt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
                 {SEVERITY_LABEL[group.severity]} ({group.items.length})
               </div>
               <div className="flex flex-col gap-1.5">
@@ -211,7 +211,7 @@ function UsageMeter({
   const exhausted = usage.tokensUsed >= usage.budget;
   return (
     <div className="border-t border-slate-200 px-4 py-2">
-      <div className="flex items-center justify-between text-[10px] text-slate-400">
+      <div className="flex items-center justify-between text-[11px] text-slate-400">
         <span className={exhausted ? "font-semibold text-red-600" : undefined}>
           AI session: {Math.round(usage.tokensUsed / 1000)}k /{" "}
           {Math.round(usage.budget / 1000)}k tokens
@@ -234,7 +234,7 @@ function UsageMeter({
         />
       </div>
       {exhausted && (
-        <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px]">
+        <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px]">
           <span className="text-slate-500">
             Budget spent — AI is paused for this tree.
           </span>
@@ -267,7 +267,7 @@ function AnalysisStatusBadge({ store }: { store: StoreApi<EditorState> }) {
   const c = config[state];
   if (!c) return null;
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${c.className}`}>
+    <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${c.className}`}>
       {c.label}
     </span>
   );
