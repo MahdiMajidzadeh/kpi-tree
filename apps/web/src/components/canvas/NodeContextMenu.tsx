@@ -13,11 +13,12 @@ export function NodeContextMenu({ store }: { store: StoreApi<EditorState> }) {
   useEffect(() => {
     if (!menu) return;
     const close = () => store.getState().setContextMenu(null);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     window.addEventListener("click", close);
-    window.addEventListener("keydown", close);
+    window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("click", close);
-      window.removeEventListener("keydown", close);
+      window.removeEventListener("keydown", onKey);
     };
   }, [menu, store]);
 
@@ -57,6 +58,7 @@ export function NodeContextMenu({ store }: { store: StoreApi<EditorState> }) {
 
   return (
     <div
+      role="menu"
       className="fixed z-50 w-56 rounded-lg border border-slate-200 bg-white py-1 shadow-xl"
       style={{
         left: Math.min(menu.screen.x, window.innerWidth - 240),
@@ -95,6 +97,7 @@ function MenuItem({
 }) {
   return (
     <button
+      role="menuitem"
       className={`block w-full px-3 py-1.5 text-start text-sm ${
         danger ? "text-red-600 hover:bg-red-50" : "text-slate-700 hover:bg-slate-50"
       }`}

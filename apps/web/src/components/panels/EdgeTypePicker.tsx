@@ -20,7 +20,10 @@ export function EdgeTypePicker({ store }: { store: StoreApi<EditorState> }) {
     if (!pending) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") store.getState().cancelConnection();
-      if (e.key === "Enter") store.getState().confirmConnection("influence");
+      // Enter is handled by the focused option button (the default,
+      // "influence", is auto-focused when the picker opens).
+      if (e.key === "Enter" && !(e.target instanceof HTMLButtonElement))
+        store.getState().confirmConnection("influence");
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -44,9 +47,10 @@ export function EdgeTypePicker({ store }: { store: StoreApi<EditorState> }) {
         {" → "}
         <span dir="auto" className="bidi-plaintext font-medium">{targetTitle}</span>
       </div>
-      {TYPES.map((t) => (
+      {TYPES.map((t, index) => (
         <button
           key={t.value}
+          autoFocus={index === 0}
           className="flex w-full flex-col items-start rounded px-2 py-1.5 text-start hover:bg-indigo-50"
           onClick={() => store.getState().confirmConnection(t.value)}
         >
