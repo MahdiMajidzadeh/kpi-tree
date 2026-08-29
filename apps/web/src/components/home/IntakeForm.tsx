@@ -182,7 +182,9 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
               />
               <span
                 className={
-                  description.trim().length < 50 ? "text-amber-600" : "text-slate-400"
+                  description.trim().length > 0 && description.trim().length < 50
+                    ? "text-amber-600"
+                    : "text-slate-400"
                 }
               >
                 {description.trim().length}/50
