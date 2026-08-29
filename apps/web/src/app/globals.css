@@ -15,6 +15,13 @@ body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
 
+/* The editor is keyboard-heavy (⌘K, ⌘Z, Del) but had no focus system:
+   keyboard users get a consistent ring, pointer clicks stay clean. */
+:focus-visible {
+  outline: 2px solid var(--color-indigo-500);
+  outline-offset: 1px;
+}
+
 /* Node titles / formulas may contain Persian (RTL) text.
    dir="auto" on the element + plaintext bidi keeps each string
    in its natural direction without flipping the surrounding UI. */

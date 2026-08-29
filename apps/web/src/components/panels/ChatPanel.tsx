@@ -208,7 +208,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
             rows={2}
             value={input}
             placeholder="Ask a question or describe a metric…"
-            className="bidi-plaintext min-h-[38px] flex-1 resize-none rounded-lg border border-slate-300 px-2 py-1.5 text-xs leading-snug outline-none focus:border-indigo-400"
+            className="bidi-plaintext min-h-[38px] flex-1 resize-none rounded-lg border border-slate-300 px-2 py-1.5 text-xs leading-snug focus:border-indigo-400"
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
