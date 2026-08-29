@@ -235,6 +235,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
               <label className="mt-1 flex items-center gap-2 font-normal">
                 <input
                   type="checkbox"
+                  className="h-4 w-4 accent-indigo-600"
                   checked={helpMeChoose}
                   onChange={(e) => setHelpMeChoose(e.target.checked)}
                 />

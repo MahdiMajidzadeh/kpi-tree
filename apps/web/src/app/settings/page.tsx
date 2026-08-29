@@ -158,6 +158,7 @@ export default function SettingsPage() {
           </span>
           <input
             type="checkbox"
+            className="h-4 w-4 accent-indigo-600"
             checked={settings.realtimeEnabled}
             onChange={(e) => void patch({ realtimeEnabled: e.target.checked })}
           />
