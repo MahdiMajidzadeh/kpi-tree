@@ -8,6 +8,7 @@ import {
   type Edge as FlowEdge,
 } from "@xyflow/react";
 import type { Edge, MetricNode as MetricNodeData } from "@kti/schema";
+import { DIFF_COLOR } from "@/lib/colors";
 import { diffTrees } from "@/lib/tree/diff-trees";
 import { MetricNode, type MetricFlowNode, type DiffState } from "@/components/canvas/MetricNode";
 import { TypedEdge, type TypedFlowEdge } from "@/components/canvas/TypedEdge";
@@ -114,9 +115,9 @@ export function SnapshotDiffView({
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-4 border-b border-slate-200 bg-white px-4 py-2 text-xs">
-        <Legend color="#16a34a" label={`${summary.added} added`} />
-        <Legend color="#dc2626" label={`${summary.removed} removed`} />
-        <Legend color="#d97706" label={`${summary.modified} modified`} />
+        <Legend color={DIFF_COLOR.added} label={`${summary.added} added`} />
+        <Legend color={DIFF_COLOR.removed} label={`${summary.removed} removed`} />
+        <Legend color={DIFF_COLOR.modified} label={`${summary.modified} modified`} />
         <span className="text-slate-400">{summary.edgesChanged} edge changes</span>
       </div>
       <div className="min-h-0 flex-1">

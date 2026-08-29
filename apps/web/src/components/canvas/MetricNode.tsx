@@ -4,19 +4,17 @@ import { memo } from "react";
 import { Handle, Position, type NodeProps, type Node } from "@xyflow/react";
 import type { MetricNode as MetricNodeData, Severity } from "@kti/schema";
 import {
+  DIFF_COLOR,
   DIRECTION_STYLE,
   SEVERITY_RING,
   TIMELINESS_STYLE,
+  type DiffState,
 } from "@/lib/colors";
 import { NODE_HEIGHT, NODE_WIDTH, NS_HEIGHT, NS_WIDTH } from "./layout";
 
-export type DiffState = "added" | "removed" | "modified";
+export type { DiffState };
 
-const DIFF_OUTLINE: Record<DiffState, string> = {
-  added: "#16a34a",
-  removed: "#dc2626",
-  modified: "#d97706",
-};
+const DIFF_OUTLINE: Record<DiffState, string> = DIFF_COLOR;
 
 export type MetricFlowNode = Node<
   { node: MetricNodeData; severity: Severity | null; diff?: DiffState },

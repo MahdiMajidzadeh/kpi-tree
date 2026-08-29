@@ -9,18 +9,14 @@ import {
   type EdgeProps,
 } from "@xyflow/react";
 import type { EdgeType } from "@kti/schema";
-import { EDGE_STYLE } from "@/lib/colors";
+import { DIFF_COLOR, EDGE_STYLE } from "@/lib/colors";
 
 export type TypedFlowEdge = FlowEdge<
   { edgeType: EdgeType; diff?: "added" | "removed" | "modified" },
   "typed"
 >;
 
-const DIFF_STROKE = {
-  added: "#16a34a",
-  removed: "#dc2626",
-  modified: "#d97706",
-} as const;
+const DIFF_STROKE = DIFF_COLOR;
 
 function TypedEdgeComponent({
   id,

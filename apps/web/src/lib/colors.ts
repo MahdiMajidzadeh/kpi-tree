@@ -53,3 +53,13 @@ export function maxSeverity(severities: Severity[]): Severity | null {
   }
   return null;
 }
+
+/** Snapshot-diff encoding, shared by canvas outlines, edge strokes, and the
+ *  diff legend so all three always agree. */
+export const DIFF_COLOR = {
+  added: "#16a34a",
+  removed: "#dc2626",
+  modified: "#d97706",
+} as const;
+
+export type DiffState = keyof typeof DIFF_COLOR;
