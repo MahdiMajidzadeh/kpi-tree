@@ -24,7 +24,10 @@ export function DeleteNodeDialog({ store }: { store: StoreApi<EditorState> }) {
   ).length;
 
   return (
-    <Dialog.Root open onOpenChange={(open) => !open && state.setEditingNode(null)}>
+    <Dialog.Root
+      open
+      onOpenChange={(open) => !open && store.setState({ deleteDialogNodeId: null })}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-black/30" />
         <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-2xl">
