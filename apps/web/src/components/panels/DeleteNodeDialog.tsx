@@ -45,7 +45,7 @@ export function DeleteNodeDialog({ store }: { store: StoreApi<EditorState> }) {
 
           <div className="mt-4 flex flex-col gap-2">
             <button
-              className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-left hover:bg-red-100"
+              className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-start hover:bg-red-100"
               onClick={() => store.getState().deleteNodeSubtree(nodeId)}
             >
               <div className="text-sm font-medium text-red-700">
@@ -57,7 +57,7 @@ export function DeleteNodeDialog({ store }: { store: StoreApi<EditorState> }) {
               </div>
             </button>
             <button
-              className="rounded-lg border border-slate-200 px-3 py-2 text-left hover:bg-slate-50"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-start hover:bg-slate-50"
               onClick={() => store.getState().deleteNodeReparent(nodeId)}
             >
               <div className="text-sm font-medium text-slate-700">

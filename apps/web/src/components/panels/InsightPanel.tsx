@@ -42,7 +42,10 @@ function InsightCard({
           >
             {insight.source === "rule" ? "Rule" : "AI"}
           </span>
-          <span className="truncate text-xs font-semibold text-slate-700">
+          <span
+            dir="auto"
+            className="bidi-plaintext truncate text-xs font-semibold text-slate-700"
+          >
             {insight.title}
           </span>
         </div>

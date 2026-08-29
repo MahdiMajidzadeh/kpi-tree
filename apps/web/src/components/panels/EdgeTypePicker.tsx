@@ -47,7 +47,7 @@ export function EdgeTypePicker({ store }: { store: StoreApi<EditorState> }) {
       {TYPES.map((t) => (
         <button
           key={t.value}
-          className="flex w-full flex-col items-start rounded px-2 py-1.5 text-left hover:bg-indigo-50"
+          className="flex w-full flex-col items-start rounded px-2 py-1.5 text-start hover:bg-indigo-50"
           onClick={() => store.getState().confirmConnection(t.value)}
         >
           <span className="text-sm font-medium text-slate-800">{t.label}</span>

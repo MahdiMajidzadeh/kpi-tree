@@ -49,7 +49,7 @@ function MessageBody({ text }: { text: string }) {
         const bullets = lines.every((line) => /^\s*[-•*]\s+/.test(line));
         if (bullets) {
           return (
-            <ul key={index} className="ml-3 list-disc space-y-0.5 [&:not(:first-child)]:mt-1.5">
+            <ul key={index} className="ms-3 list-disc space-y-0.5 [&:not(:first-child)]:mt-1.5">
               {lines.map((line, i) => (
                 <li key={i} dir="auto" className="bidi-plaintext">
                   {line.replace(/^\s*[-•*]\s+/, "")}

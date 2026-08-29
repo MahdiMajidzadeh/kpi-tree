@@ -177,7 +177,7 @@ function ExportMenu({ treeId, fileName }: { treeId: string; fileName: string }) 
         {(["png", "svg"] as const).map((format) => (
           <button
             key={format}
-            className="block w-full px-3 py-1.5 text-left text-sm text-slate-600 hover:bg-slate-50"
+            className="block w-full px-3 py-1.5 text-start text-sm text-slate-600 hover:bg-slate-50"
             onClick={() =>
               void import("./export-image").then((m) =>
                 m.exportCanvasImage(reactFlow, format, fileName),

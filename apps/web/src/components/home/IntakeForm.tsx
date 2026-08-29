@@ -284,7 +284,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
                 <button
                   key={candidate.title}
                   disabled={busy}
-                  className="rounded-lg border border-slate-200 p-3 text-left hover:border-indigo-400 hover:bg-indigo-50/50 disabled:opacity-50"
+                  className="rounded-lg border border-slate-200 p-3 text-start hover:border-indigo-400 hover:bg-indigo-50/50 disabled:opacity-50"
                   onClick={() => void chooseNorthStar(candidate)}
                 >
                   <div dir="auto" className="bidi-plaintext text-sm font-semibold text-slate-800">
@@ -318,7 +318,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
               {phase.state === "validating" && "Validating structure…"}
               {phase.state === "rendering" && "Rendering canvas…"}
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p dir="auto" className="bidi-plaintext mt-1 text-sm text-slate-500">
               {phase.message ?? "This usually takes under 90 seconds."}
             </p>
             <div className="mx-auto mt-4 h-1.5 w-56 overflow-hidden rounded bg-slate-100">
@@ -330,7 +330,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
         {phase.kind === "failed" && (
           <div className="py-4">
             <h2 className="text-lg font-semibold text-red-700">Generation failed</h2>
-            <p className="mt-2 whitespace-pre-wrap text-sm text-slate-600">
+            <p dir="auto" className="bidi-plaintext mt-2 whitespace-pre-wrap text-sm text-slate-600">
               {phase.message}
             </p>
             <div className="mt-4 flex justify-end gap-2">

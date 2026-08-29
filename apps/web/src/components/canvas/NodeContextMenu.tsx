@@ -95,7 +95,7 @@ function MenuItem({
 }) {
   return (
     <button
-      className={`block w-full px-3 py-1.5 text-left text-sm ${
+      className={`block w-full px-3 py-1.5 text-start text-sm ${
         danger ? "text-red-600 hover:bg-red-50" : "text-slate-700 hover:bg-slate-50"
       }`}
       onClick={onClick}
