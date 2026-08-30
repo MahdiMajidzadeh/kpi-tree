@@ -48,6 +48,23 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
   const eventSource = useRef<EventSource | null>(null);
   useEffect(() => () => eventSource.current?.close(), []);
 
+  // Esc closes the dialog in every phase that shows a Cancel/Close button.
+  // While generating there is deliberately no close affordance, so Esc is
+  // inert there too — closing would silently abandon the progress watch.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closable = phase.kind !== "generating";
+  useEffect(() => {
+    dialogRef.current?.focus();
+  }, []);
+  useEffect(() => {
+    if (!closable) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [closable, onClose]);
+
   const intakePayload = (chosenNorthStar?: string) => ({
     name: name.trim() || undefined,
     productDescription: description.trim(),
@@ -149,7 +166,14 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 p-6">
-      <div className="max-h-full w-[560px] max-w-full overflow-y-auto rounded-xl bg-white p-6 shadow-2xl">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Generate a KPI tree"
+        tabIndex={-1}
+        className="max-h-full w-[560px] max-w-full overflow-y-auto rounded-xl bg-white p-6 shadow-2xl outline-none"
+      >
         {phase.kind === "form" && (
           <>
             <h2 className="text-lg font-semibold text-slate-900">
