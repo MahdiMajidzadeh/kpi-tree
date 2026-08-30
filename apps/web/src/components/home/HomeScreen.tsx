@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import * as Dialog from "@radix-ui/react-dialog";
 import type { TreeListItem } from "@/db/repo/trees";
 import { IntakeForm } from "./IntakeForm";
 
 export function HomeScreen() {
   const [trees, setTrees] = useState<TreeListItem[] | null>(null);
   const [showIntake, setShowIntake] = useState(false);
+  const [newTreeOpen, setNewTreeOpen] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -22,18 +24,6 @@ export function HomeScreen() {
   useEffect(() => {
     void refresh();
   }, [refresh]);
-
-  const startBlank = async () => {
-    const name = prompt("Name for the new tree:", "Untitled KPI tree");
-    if (!name) return;
-    const response = await fetch("/api/trees", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, blank: true }),
-    });
-    const data = (await response.json()) as { tree: { id: string } };
-    router.push(`/trees/${data.tree.id}`);
-  };
 
   const onImportFile = async (file: File) => {
     setImportError(null);
@@ -84,7 +74,7 @@ export function HomeScreen() {
         </button>
         <button
           className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-          onClick={() => void startBlank()}
+          onClick={() => setNewTreeOpen(true)}
         >
           Start blank
         </button>
@@ -128,7 +118,78 @@ export function HomeScreen() {
       </div>
 
       {showIntake && <IntakeForm onClose={() => setShowIntake(false)} />}
+      <NewTreeDialog open={newTreeOpen} onClose={() => setNewTreeOpen(false)} />
     </main>
+  );
+}
+
+function NewTreeDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const router = useRouter();
+  const [name, setName] = useState("Untitled KPI tree");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const create = async () => {
+    if (busy || !name.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/trees", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), blank: true }),
+      });
+      const data = (await response.json()) as { tree?: { id: string } };
+      if (!response.ok || !data.tree) {
+        setError("Could not create the tree — try again.");
+        return;
+      }
+      router.push(`/trees/${data.tree.id}`);
+    } catch {
+      setError("Could not reach the server.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Dialog.Root open={open} onOpenChange={(o) => !o && onClose()}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-40 bg-black/30" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[420px] max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-2xl">
+          <Dialog.Title className="text-base font-semibold text-slate-800">
+            New blank tree
+          </Dialog.Title>
+          <Dialog.Description className="mt-1 text-sm text-slate-500">
+            Name it after the product or team it will measure.
+          </Dialog.Description>
+          <input
+            autoFocus
+            dir="auto"
+            className="bidi-plaintext mt-3 w-full rounded border border-slate-300 px-2 py-1.5 text-sm"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onFocus={(e) => e.target.select()}
+            onKeyDown={(e) => e.key === "Enter" && void create()}
+          />
+          {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+          <div className="mt-4 flex justify-end gap-2">
+            <Dialog.Close asChild>
+              <button className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-50">
+                Cancel
+              </button>
+            </Dialog.Close>
+            <button
+              className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+              disabled={busy || !name.trim()}
+              onClick={() => void create()}
+            >
+              {busy ? "Creating…" : "Create tree"}
+            </button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 
@@ -142,6 +203,8 @@ function TreeCard({
   const router = useRouter();
   const [renaming, setRenaming] = useState(false);
   const [name, setName] = useState(tree.name);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const rename = async () => {
     setRenaming(false);
@@ -161,9 +224,15 @@ function TreeCard({
   };
 
   const remove = async () => {
-    if (!confirm(`Delete "${tree.name}"? This cannot be undone.`)) return;
-    await fetch(`/api/trees/${tree.id}`, { method: "DELETE" });
-    onChanged();
+    if (deleting) return;
+    setDeleting(true);
+    try {
+      await fetch(`/api/trees/${tree.id}`, { method: "DELETE" });
+      setConfirmingDelete(false);
+      onChanged();
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -239,11 +308,49 @@ function TreeCard({
         </button>
         <button
           className="rounded px-2 py-1.5 text-xs text-slate-500 hover:bg-red-50 hover:text-red-600"
-          onClick={() => void remove()}
+          onClick={() => setConfirmingDelete(true)}
         >
           Delete
         </button>
       </div>
+      <Dialog.Root
+        open={confirmingDelete}
+        onOpenChange={(o) => !o && !deleting && setConfirmingDelete(false)}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-40 bg-black/30" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[420px] max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-2xl">
+            <Dialog.Title className="text-base font-semibold text-slate-800">
+              Delete{" "}
+              <span dir="auto" className="bidi-plaintext">
+                “{tree.name}”
+              </span>
+              ?
+            </Dialog.Title>
+            <Dialog.Description className="mt-1 text-sm text-slate-500">
+              This deletes the tree and its {tree.nodeCount} metric
+              {tree.nodeCount === 1 ? "" : "s"}. This cannot be undone.
+            </Dialog.Description>
+            <div className="mt-4 flex justify-end gap-2">
+              <Dialog.Close asChild>
+                <button
+                  className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-50 disabled:opacity-50"
+                  disabled={deleting}
+                >
+                  Cancel
+                </button>
+              </Dialog.Close>
+              <button
+                className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                disabled={deleting}
+                onClick={() => void remove()}
+              >
+                {deleting ? "Deleting…" : "Delete tree"}
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }
