@@ -89,7 +89,7 @@ function MessageBubble({
       <div className="flex justify-end">
         <div
           dir="auto"
-          className="bidi-plaintext max-w-[85%] whitespace-pre-wrap rounded-lg rounded-br-sm bg-indigo-600 px-2.5 py-1.5 text-xs leading-snug text-white"
+          className="bidi-plaintext max-w-[85%] whitespace-pre-wrap rounded-lg rounded-ee-sm bg-indigo-600 px-2.5 py-1.5 text-xs leading-snug text-white"
         >
           {message.content}
         </div>
@@ -101,7 +101,7 @@ function MessageBubble({
     <div>
       <ToolChips calls={message.toolCalls} />
       <div
-        className={`rounded-lg rounded-bl-sm px-2.5 py-1.5 text-xs leading-snug ${
+        className={`rounded-lg rounded-es-sm px-2.5 py-1.5 text-xs leading-snug ${
           message.status === "error"
             ? "bg-red-50 text-red-700"
             : "bg-slate-100 text-slate-700"
@@ -186,7 +186,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
         {draft && (
           <div>
             <ToolChips calls={draft.toolCalls} live />
-            <div className="rounded-lg rounded-bl-sm bg-slate-100 px-2.5 py-1.5 text-xs leading-snug text-slate-700">
+            <div className="rounded-lg rounded-es-sm bg-slate-100 px-2.5 py-1.5 text-xs leading-snug text-slate-700">
               {draft.text ? (
                 <MessageBody text={draft.text} />
               ) : (

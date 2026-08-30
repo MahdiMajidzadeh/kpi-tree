@@ -28,7 +28,7 @@ function InsightCard({
   return (
     <div
       className="group cursor-pointer rounded-lg border border-slate-200 bg-white p-2.5 hover:border-slate-300"
-      style={{ borderLeft: `3px solid ${SEVERITY_RING[insight.severity]}` }}
+      style={{ borderInlineStart: `3px solid ${SEVERITY_RING[insight.severity]}` }}
       onClick={() => store.getState().focusNodes(insight.nodeIds)}
     >
       <div className="flex items-center justify-between gap-2">

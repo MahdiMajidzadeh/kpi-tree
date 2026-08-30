@@ -33,7 +33,7 @@ function MetricNodeComponent({ data, selected }: NodeProps<MetricFlowNode>) {
     <div
       className={[
         "flex flex-col justify-center rounded-lg border px-3 py-2 shadow-sm transition-shadow",
-        "border-l-4",
+        "border-s-4",
         direction.border,
         isNorthStar
           ? "border-indigo-700 bg-indigo-600 text-white shadow-md"

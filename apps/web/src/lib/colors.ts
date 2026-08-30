@@ -7,17 +7,17 @@ export const DIRECTION_STYLE: Record<
   { border: string; chip: string; label: string }
 > = {
   increase: {
-    border: "border-l-emerald-500",
+    border: "border-s-emerald-500",
     chip: "bg-emerald-100 text-emerald-800",
     label: "↑ increase",
   },
   decrease: {
-    border: "border-l-sky-500",
+    border: "border-s-sky-500",
     chip: "bg-sky-100 text-sky-800",
     label: "↓ decrease",
   },
   guard: {
-    border: "border-l-amber-500",
+    border: "border-s-amber-500",
     chip: "bg-amber-100 text-amber-900",
     label: "🛡 guard",
   },

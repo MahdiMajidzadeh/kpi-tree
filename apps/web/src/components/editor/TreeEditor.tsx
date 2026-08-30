@@ -59,7 +59,7 @@ function EditorShell({ store }: { store: StoreApi<EditorState> }) {
         <div className="relative min-w-0 flex-1">
           <TreeCanvas store={store} />
         </div>
-        <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-slate-200 bg-white">
+        <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-s border-slate-200 bg-white">
           <NodeEditorPanel store={store} />
           <InsightPanel store={store} />
         </aside>
