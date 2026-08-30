@@ -42,12 +42,17 @@ function InsightCard({
           >
             {insight.source === "rule" ? "Rule" : "AI"}
           </span>
-          <span
+          <button
             dir="auto"
-            className="bidi-plaintext truncate text-xs font-semibold text-slate-700"
+            className="bidi-plaintext min-w-0 truncate text-start text-xs font-semibold text-slate-700 hover:text-indigo-700"
+            title="Locate on canvas"
+            onClick={(e) => {
+              e.stopPropagation();
+              store.getState().focusNodes(insight.nodeIds);
+            }}
           >
             {insight.title}
-          </span>
+          </button>
         </div>
         <button
           className="shrink-0 rounded px-1.5 py-0.5 text-xs text-slate-300 hover:bg-slate-100 hover:text-slate-600"
