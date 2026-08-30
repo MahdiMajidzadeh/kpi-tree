@@ -67,7 +67,7 @@ function MetricNodeComponent({ data, selected }: NodeProps<MetricFlowNode>) {
         </div>
         {node.timeliness && (
           <span
-            className={`shrink-0 rounded px-1 py-px text-[9px] font-bold tracking-wide ${TIMELINESS_STYLE[node.timeliness].chip}`}
+            className={`shrink-0 rounded px-1 py-px text-[10px] font-bold tracking-wide ${TIMELINESS_STYLE[node.timeliness].chip}`}
           >
             {TIMELINESS_STYLE[node.timeliness].label}
           </span>
