@@ -65,7 +65,7 @@ export default function SettingsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-slate-900">Settings</h1>
         <div className="flex items-center gap-3">
-          {saved && <span className="text-xs text-emerald-600">Saved ✓</span>}
+          {saved && <span role="status" className="text-xs text-emerald-600">Saved ✓</span>}
           <Link href="/" className="text-sm text-slate-500 hover:underline">
             ← Trees
           </Link>

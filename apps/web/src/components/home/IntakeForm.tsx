@@ -338,7 +338,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
         )}
 
         {phase.kind === "generating" && (
-          <div className="py-6 text-center">
+          <div role="status" className="py-6 text-center">
             <div className="text-3xl">🌳</div>
             <h2 className="mt-3 text-lg font-semibold text-slate-900">
               {phase.state === "generating" && "Generating your KPI tree…"}
@@ -348,7 +348,11 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
             <p dir="auto" className="bidi-plaintext mt-1 text-sm text-slate-500">
               {phase.message ?? "This usually takes under 90 seconds."}
             </p>
-            <div className="mx-auto mt-4 h-1.5 w-56 overflow-hidden rounded bg-slate-100">
+            <div
+              role="progressbar"
+              aria-label="Tree generation progress"
+              className="mx-auto mt-4 h-1.5 w-56 overflow-hidden rounded bg-slate-100"
+            >
               <div className="h-full w-1/3 animate-pulse rounded bg-indigo-600" />
             </div>
           </div>

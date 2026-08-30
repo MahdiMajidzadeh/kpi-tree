@@ -190,7 +190,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
               {draft.text ? (
                 <MessageBody text={draft.text} />
               ) : (
-                <span className="animate-pulse text-slate-500">
+                <span role="status" className="animate-pulse text-slate-500">
                   {draft.state === "queued" ? "Waiting for the analyzer…" : "Thinking…"}
                 </span>
               )}

@@ -20,7 +20,10 @@ export function ConnectionErrorToast({ store }: { store: StoreApi<EditorState> }
 
   return (
     <div className="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
-      <div className="max-w-md rounded-lg bg-slate-900 px-4 py-2.5 text-sm text-white shadow-xl">
+      <div
+        role="status"
+        className="max-w-md rounded-lg bg-slate-900 px-4 py-2.5 text-sm text-white shadow-xl"
+      >
         <span className="me-1.5">⚠️</span>
         {error.reason}
       </div>
