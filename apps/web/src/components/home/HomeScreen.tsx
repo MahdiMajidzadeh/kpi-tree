@@ -115,10 +115,10 @@ export function HomeScreen() {
 
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {trees === null && (
-          <p className="text-sm text-slate-400">Loading trees…</p>
+          <p className="text-sm text-slate-500">Loading trees…</p>
         )}
         {trees?.length === 0 && (
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-500">
             No trees yet — generate one from a product description to get started.
           </p>
         )}
@@ -214,7 +214,7 @@ function TreeCard({
           </span>
         )}
       </div>
-      <div className="mt-1 text-[11px] text-slate-400">
+      <div className="mt-1 text-[11px] text-slate-500">
         Updated{" "}
         {new Date(tree.updatedAt).toLocaleString(undefined, {
           dateStyle: "medium",
@@ -226,19 +226,19 @@ function TreeCard({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="rounded px-2 py-1.5 text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+          className="rounded px-2 py-1.5 text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-600"
           onClick={() => setRenaming(true)}
         >
           Rename
         </button>
         <button
-          className="rounded px-2 py-1.5 text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+          className="rounded px-2 py-1.5 text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-600"
           onClick={() => void duplicate()}
         >
           Duplicate
         </button>
         <button
-          className="rounded px-2 py-1.5 text-xs text-slate-400 hover:bg-red-50 hover:text-red-600"
+          className="rounded px-2 py-1.5 text-xs text-slate-500 hover:bg-red-50 hover:text-red-600"
           onClick={() => void remove()}
         >
           Delete

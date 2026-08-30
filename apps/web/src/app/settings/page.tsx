@@ -57,7 +57,7 @@ export default function SettingsPage() {
   };
 
   if (!settings) {
-    return <main className="p-10 text-sm text-slate-400">Loading settings…</main>;
+    return <main className="p-10 text-sm text-slate-500">Loading settings…</main>;
   }
 
   return (
@@ -130,7 +130,7 @@ export default function SettingsPage() {
             >
               <span>
                 <span className="font-medium text-slate-700">{task.label}</span>
-                <span className="block text-xs text-slate-400">{task.hint}</span>
+                <span className="block text-xs text-slate-500">{task.hint}</span>
               </span>
               <select
                 className="rounded border border-slate-300 px-2 py-1.5 text-sm"
@@ -166,7 +166,7 @@ export default function SettingsPage() {
         <label className="mt-3 flex items-center justify-between text-sm">
           <span>
             <span className="font-medium text-slate-700">Debounce (ms)</span>
-            <span className="block text-xs text-slate-400">
+            <span className="block text-xs text-slate-500">
               A burst of edits becomes one analysis
             </span>
           </span>
@@ -183,7 +183,7 @@ export default function SettingsPage() {
         <label className="mt-3 flex items-center justify-between text-sm">
           <span>
             <span className="font-medium text-slate-700">Session token budget</span>
-            <span className="block text-xs text-slate-400">
+            <span className="block text-xs text-slate-500">
               AI stops when a tree&apos;s session spends this many tokens
             </span>
           </span>

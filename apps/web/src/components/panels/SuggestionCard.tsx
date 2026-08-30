@@ -36,7 +36,7 @@ export function SuggestionCard({
       <p dir="auto" className="bidi-plaintext mt-1 text-xs leading-snug text-slate-600">
         {suggestion.reason}
       </p>
-      <div className="mt-1 text-[11px] text-slate-400">
+      <div className="mt-1 text-[11px] text-slate-500">
         under <span dir="auto" className="bidi-plaintext">{parentTitle}</span> ·{" "}
         {suggestion.edgeType}
       </div>

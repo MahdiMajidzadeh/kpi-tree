@@ -106,7 +106,7 @@ export function TreeEditor({ treeId }: { treeId: string }) {
   }
   if (!store) {
     return (
-      <div className="flex h-screen items-center justify-center text-slate-400">
+      <div className="flex h-screen items-center justify-center text-slate-500">
         Loading tree…
       </div>
     );

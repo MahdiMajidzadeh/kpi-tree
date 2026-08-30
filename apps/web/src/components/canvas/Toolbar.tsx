@@ -79,7 +79,7 @@ export function Toolbar({ store }: { store: StoreApi<EditorState> }) {
       <span
         className={`ml-1 text-[11px] ${
           saveState === "saved"
-            ? "text-slate-400"
+            ? "text-slate-500"
             : saveState === "saving"
               ? "text-indigo-500"
               : "text-red-500"

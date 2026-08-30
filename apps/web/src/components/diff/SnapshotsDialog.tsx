@@ -123,7 +123,7 @@ export function SnapshotsDialog({
 
             <div className="mt-4 flex flex-col gap-1.5">
               {snapshots.length === 0 && (
-                <p className="py-4 text-center text-xs text-slate-400">
+                <p className="py-4 text-center text-xs text-slate-500">
                   No snapshots yet.
                 </p>
               )}
@@ -140,7 +140,7 @@ export function SnapshotsDialog({
                     <div dir="auto" className="bidi-plaintext truncate text-sm font-medium text-slate-700">
                       {snapshot.name}
                     </div>
-                    <div className="text-[11px] text-slate-400">
+                    <div className="text-[11px] text-slate-500">
                       {new Date(snapshot.createdAt).toLocaleString()}
                     </div>
                   </div>

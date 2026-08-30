@@ -66,7 +66,7 @@ export function NodeContextMenu({ store }: { store: StoreApi<EditorState> }) {
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div dir="auto" className="bidi-plaintext truncate px-3 py-1 text-xs font-semibold text-slate-400">
+      <div dir="auto" className="bidi-plaintext truncate px-3 py-1 text-xs font-semibold text-slate-500">
         {node.title}
       </div>
       <MenuItem onClick={() => void store.getState().requestSuggestions(node.id)}>

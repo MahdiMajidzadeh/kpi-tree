@@ -109,7 +109,7 @@ function MessageBubble({
       >
         <MessageBody text={message.content} />
         {message.status === "interrupted" && (
-          <span className="mt-1 block text-[11px] italic text-slate-400">stopped</span>
+          <span className="mt-1 block text-[11px] italic text-slate-500">stopped</span>
         )}
       </div>
       {mine.length > 0 && (
@@ -163,7 +163,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
       <div ref={scrollRef} className="flex flex-1 flex-col gap-2 overflow-y-auto px-4 pb-2 pt-1">
         {messages.length === 0 && !draft && (
           <div className="mt-3 flex flex-col gap-1.5">
-            <p className="text-xs leading-snug text-slate-400">
+            <p className="text-xs leading-snug text-slate-500">
               Ask about this tree, or describe a metric you need — accepted
               suggestions drop straight onto the canvas.
             </p>
@@ -190,7 +190,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
               {draft.text ? (
                 <MessageBody text={draft.text} />
               ) : (
-                <span className="animate-pulse text-slate-400">
+                <span className="animate-pulse text-slate-500">
                   {draft.state === "queued" ? "Waiting for the analyzer…" : "Thinking…"}
                 </span>
               )}
@@ -239,7 +239,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
         </div>
         {messages.length > 0 && (
           <button
-            className="mt-1 text-[11px] text-slate-400 hover:text-slate-600"
+            className="mt-1 text-[11px] text-slate-500 hover:text-slate-600"
             title="Clears the transcript and starts a fresh AI session for this tree"
             onClick={() => void store.getState().clearChat()}
           >

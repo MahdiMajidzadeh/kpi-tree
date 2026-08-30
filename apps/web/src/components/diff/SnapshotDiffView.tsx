@@ -118,7 +118,7 @@ export function SnapshotDiffView({
         <Legend color={DIFF_COLOR.added} label={`${summary.added} added`} />
         <Legend color={DIFF_COLOR.removed} label={`${summary.removed} removed`} />
         <Legend color={DIFF_COLOR.modified} label={`${summary.modified} modified`} />
-        <span className="text-slate-400">{summary.edgesChanged} edge changes</span>
+        <span className="text-slate-500">{summary.edgesChanged} edge changes</span>
       </div>
       <div className="min-h-0 flex-1">
         <ReactFlowProvider>

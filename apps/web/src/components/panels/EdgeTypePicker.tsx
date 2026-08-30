@@ -59,7 +59,7 @@ export function EdgeTypePicker({ store }: { store: StoreApi<EditorState> }) {
         </button>
       ))}
       <button
-        className="mt-1 w-full rounded px-2 py-1 text-xs text-slate-400 hover:bg-slate-50"
+        className="mt-1 w-full rounded px-2 py-1 text-xs text-slate-500 hover:bg-slate-50"
         onClick={() => store.getState().cancelConnection()}
       >
         Cancel (Esc)

@@ -55,7 +55,7 @@ function InsightCard({
           </button>
         </div>
         <button
-          className="shrink-0 rounded px-1.5 py-0.5 text-xs text-slate-300 hover:bg-slate-100 hover:text-slate-600"
+          className="shrink-0 rounded px-1.5 py-0.5 text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-700"
           title="Dismiss"
           aria-label="Dismiss insight"
           onClick={(e) => {
@@ -140,13 +140,13 @@ export function InsightPanel({ store }: { store: StoreApi<EditorState> }) {
             {deepAnalysisRunning ? "Deep analysis running…" : "🔬 Deep analysis (full tree)"}
           </button>
           {grouped.length === 0 && (
-            <p className="mt-4 text-center text-xs text-slate-400">
+            <p className="mt-4 text-center text-xs text-slate-500">
               No active insights — the tree looks structurally sound.
             </p>
           )}
           {grouped.map((group) => (
             <div key={group.severity}>
-              <div className="mb-1 mt-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <div className="mb-1 mt-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
                 {SEVERITY_LABEL[group.severity]} ({group.items.length})
               </div>
               <div className="flex flex-col gap-1.5">
@@ -167,7 +167,7 @@ export function InsightPanel({ store }: { store: StoreApi<EditorState> }) {
             {suggestionsLoading ? "Asking for suggestions…" : "✨ Suggest metrics"}
           </button>
           {proposed.length === 0 && !suggestionsLoading && (
-            <p className="mt-4 text-center text-xs text-slate-400">
+            <p className="mt-4 text-center text-xs text-slate-500">
               No pending suggestions. Ask for some — or right-click a node to get
               branch-specific ones.
             </p>
@@ -195,7 +195,7 @@ function TabButton({
   return (
     <button
       className={`rounded-md px-2 py-1 text-xs font-semibold ${
-        active ? "bg-slate-100 text-slate-800" : "text-slate-400 hover:text-slate-600"
+        active ? "bg-slate-100 text-slate-800" : "text-slate-500 hover:text-slate-600"
       }`}
       onClick={onClick}
     >
@@ -216,7 +216,7 @@ function UsageMeter({
   const exhausted = usage.tokensUsed >= usage.budget;
   return (
     <div className="border-t border-slate-200 px-4 py-2">
-      <div className="flex items-center justify-between text-[11px] text-slate-400">
+      <div className="flex items-center justify-between text-[11px] text-slate-500">
         <span className={exhausted ? "font-semibold text-red-600" : undefined}>
           AI session: {Math.round(usage.tokensUsed / 1000)}k /{" "}
           {Math.round(usage.budget / 1000)}k tokens
@@ -244,7 +244,7 @@ function UsageMeter({
             Budget spent — AI is paused for this tree.
           </span>
           <span className="flex shrink-0 items-center gap-2">
-            <Link href="/settings" className="text-slate-400 underline hover:text-slate-600">
+            <Link href="/settings" className="text-slate-500 underline hover:text-slate-600">
               Raise budget
             </Link>
             <button
