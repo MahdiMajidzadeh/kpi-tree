@@ -60,7 +60,7 @@ function TypedEdgeComponent({
             style={{
               transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
               ...(edgeType === "guard"
-                ? { borderColor: "#d97706", color: "#92400e" }
+                ? { borderColor: style.stroke, color: style.badgeText }
                 : {}),
             }}
           >

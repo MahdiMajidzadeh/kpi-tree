@@ -30,13 +30,17 @@ export const TIMELINESS_STYLE = {
 
 export const EDGE_STYLE: Record<
   EdgeType,
-  { stroke: string; dash?: string; badge?: string }
+  { stroke: string; dash?: string; badge?: string; badgeText?: string }
 > = {
   multiplicative: { stroke: "#64748b", badge: "×" },
   additive: { stroke: "#64748b", badge: "+" },
   influence: { stroke: "#94a3b8", dash: "6 4" },
-  guard: { stroke: "#d97706", dash: "2 4", badge: "🛡" },
+  guard: { stroke: "#d97706", dash: "2 4", badge: "🛡", badgeText: "#92400e" },
 };
+
+/** Canvas surface color — must match TreeCanvas's bg-slate-50 so image
+ *  exports render on the same background the user sees. */
+export const CANVAS_BG = "#f8fafc";
 
 export const SEVERITY_RING: Record<Severity, string> = {
   error: "#dc2626",

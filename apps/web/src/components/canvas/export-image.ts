@@ -6,6 +6,7 @@ import {
   getViewportForBounds,
   type ReactFlowInstance,
 } from "@xyflow/react";
+import { CANVAS_BG } from "@/lib/colors";
 
 /** Cuts of Dana the canvas can actually render (see components/canvas/*).
  *  Left to itself, html-to-image would inline every @font-face in the document
@@ -63,7 +64,7 @@ export async function exportCanvasImage(
   const viewport = getViewportForBounds(bounds, width, height, 0.2, 2, 0.06);
 
   const options = {
-    backgroundColor: "#f8fafc",
+    backgroundColor: CANVAS_BG,
     fontEmbedCSS: await getFontEmbedCSS(),
     width,
     height,
