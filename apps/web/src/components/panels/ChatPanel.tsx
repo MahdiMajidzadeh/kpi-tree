@@ -221,6 +221,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
             <button
               className="shrink-0 rounded-lg bg-slate-200 px-2.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-300"
               title="Stop the agent"
+              aria-label="Stop the agent"
               onClick={() => store.getState().stopChat()}
             >
               ■
@@ -229,6 +230,7 @@ export function ChatPanel({ store }: { store: StoreApi<EditorState> }) {
             <button
               className="shrink-0 rounded-lg bg-indigo-600 px-2.5 py-2 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
               disabled={!input.trim() || Boolean(blocked)}
+              aria-label="Send message"
               onClick={() => send(input)}
             >
               ↑

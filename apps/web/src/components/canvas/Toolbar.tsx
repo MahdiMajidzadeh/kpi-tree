@@ -65,6 +65,7 @@ export function Toolbar({ store }: { store: StoreApi<EditorState> }) {
         href="/"
         className="rounded-md px-2 py-1.5 text-sm text-slate-500 hover:bg-slate-100"
         title="Back to trees"
+        aria-label="Back to trees"
       >
         ←
       </Link>

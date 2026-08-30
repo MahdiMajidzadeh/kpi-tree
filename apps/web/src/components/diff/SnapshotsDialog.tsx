@@ -165,7 +165,9 @@ export function SnapshotsDialog({
                     {baseline === snapshot.id ? "Unset" : "Set baseline"}
                   </button>
                   <button
-                    className="rounded px-1.5 py-1 text-xs text-red-400 hover:bg-red-50"
+                    className="rounded px-1.5 py-1 text-xs text-red-500 hover:bg-red-50 hover:text-red-700"
+                    title="Delete snapshot"
+                    aria-label={`Delete snapshot "${snapshot.name}"`}
                     onClick={() => void remove(snapshot.id)}
                   >
                     ✕
