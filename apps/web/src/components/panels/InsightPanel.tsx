@@ -106,24 +106,45 @@ export function InsightPanel({ store }: { store: StoreApi<EditorState> }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center gap-1 px-4 pb-1 pt-3">
-        <TabButton
-          active={panelTab === "insights"}
-          onClick={() => store.getState().setPanelTab("insights")}
+        <div
+          role="tablist"
+          aria-label="Panel sections"
+          className="flex items-center gap-1"
+          onKeyDown={(e) => {
+            if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+            e.preventDefault();
+            const order = ["insights", "suggestions", "chat"] as const;
+            const index = order.indexOf(panelTab);
+            const next =
+              order[
+                (index + (e.key === "ArrowRight" ? 1 : -1) + order.length) %
+                  order.length
+              ] ?? "insights";
+            store.getState().setPanelTab(next);
+            (e.currentTarget.querySelectorAll<HTMLElement>("[role=tab]")[
+              order.indexOf(next)
+            ])?.focus();
+          }}
         >
-          Insights{grouped.length > 0 ? ` (${grouped.reduce((n, g) => n + g.items.length, 0)})` : ""}
-        </TabButton>
-        <TabButton
-          active={panelTab === "suggestions"}
-          onClick={() => store.getState().setPanelTab("suggestions")}
-        >
-          Suggestions{proposed.length > 0 ? ` (${proposed.length})` : ""}
-        </TabButton>
-        <TabButton
-          active={panelTab === "chat"}
-          onClick={() => store.getState().setPanelTab("chat")}
-        >
-          Chat
-        </TabButton>
+          <TabButton
+            active={panelTab === "insights"}
+            onClick={() => store.getState().setPanelTab("insights")}
+          >
+            Insights{grouped.length > 0 ? ` (${grouped.reduce((n, g) => n + g.items.length, 0)})` : ""}
+          </TabButton>
+          <TabButton
+            active={panelTab === "suggestions"}
+            onClick={() => store.getState().setPanelTab("suggestions")}
+          >
+            Suggestions{proposed.length > 0 ? ` (${proposed.length})` : ""}
+          </TabButton>
+          <TabButton
+            active={panelTab === "chat"}
+            onClick={() => store.getState().setPanelTab("chat")}
+          >
+            Chat
+          </TabButton>
+        </div>
         <div className="grow" />
         <AnalysisStatusBadge store={store} />
       </div>
@@ -194,6 +215,9 @@ function TabButton({
 }) {
   return (
     <button
+      role="tab"
+      aria-selected={active}
+      tabIndex={active ? 0 : -1}
       className={`rounded-md px-2 py-1 text-xs font-semibold ${
         active ? "bg-slate-100 text-slate-800" : "text-slate-500 hover:text-slate-600"
       }`}
