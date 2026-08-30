@@ -29,33 +29,61 @@ export default function SettingsPage() {
   const [apiKeyPresent, setApiKeyPresent] = useState<boolean | null>(null);
   const [claudeCli, setClaudeCli] = useState<ClaudeCliInfo | null>(null);
   const [saved, setSaved] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+  const [reloadNonce, setReloadNonce] = useState(0);
 
   useEffect(() => {
     void (async () => {
-      const response = await fetch("/api/settings");
-      const data = (await response.json()) as {
-        settings: AppSettings;
-        apiKeyPresent: boolean;
-        claudeCli: ClaudeCliInfo;
-      };
-      setSettings(data.settings);
-      setApiKeyPresent(data.apiKeyPresent);
-      setClaudeCli(data.claudeCli);
+      try {
+        const response = await fetch("/api/settings");
+        if (!response.ok) throw new Error(String(response.status));
+        const data = (await response.json()) as {
+          settings: AppSettings;
+          apiKeyPresent: boolean;
+          claudeCli: ClaudeCliInfo;
+        };
+        setSettings(data.settings);
+        setApiKeyPresent(data.apiKeyPresent);
+        setClaudeCli(data.claudeCli);
+        setLoadError(false);
+      } catch {
+        setLoadError(true);
+      }
     })();
-  }, []);
+  }, [reloadNonce]);
 
   const patch = async (partial: Record<string, unknown>) => {
-    const response = await fetch("/api/settings", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(partial),
-    });
-    const data = (await response.json()) as { settings: AppSettings };
-    setSettings(data.settings);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
+    try {
+      const response = await fetch("/api/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(partial),
+      });
+      if (!response.ok) throw new Error(String(response.status));
+      const data = (await response.json()) as { settings: AppSettings };
+      setSettings(data.settings);
+      setSaveError(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1500);
+    } catch {
+      setSaveError(true);
+    }
   };
 
+  if (loadError) {
+    return (
+      <main className="flex items-center gap-3 p-10 text-sm text-red-700">
+        Could not load settings.
+        <button
+          className="rounded border border-red-300 px-2 py-1 text-xs font-medium hover:bg-red-50"
+          onClick={() => setReloadNonce((n) => n + 1)}
+        >
+          Retry
+        </button>
+      </main>
+    );
+  }
   if (!settings) {
     return <main className="p-10 text-sm text-slate-500">Loading settings…</main>;
   }
@@ -66,6 +94,11 @@ export default function SettingsPage() {
         <h1 className="text-xl font-semibold text-slate-900">Settings</h1>
         <div className="flex items-center gap-3">
           {saved && <span role="status" className="text-xs text-emerald-600">Saved ✓</span>}
+          {saveError && (
+            <span role="status" className="text-xs text-red-600">
+              Save failed — change it again to retry
+            </span>
+          )}
           <Link href="/" className="text-sm text-slate-500 hover:underline">
             ← Trees
           </Link>

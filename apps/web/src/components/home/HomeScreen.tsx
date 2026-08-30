@@ -15,10 +15,17 @@ export function HomeScreen() {
   const fileInput = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  const [loadError, setLoadError] = useState(false);
   const refresh = useCallback(async () => {
-    const response = await fetch("/api/trees");
-    const data = (await response.json()) as { trees: TreeListItem[] };
-    setTrees(data.trees);
+    try {
+      const response = await fetch("/api/trees");
+      if (!response.ok) throw new Error(String(response.status));
+      const data = (await response.json()) as { trees: TreeListItem[] };
+      setTrees(data.trees);
+      setLoadError(false);
+    } catch {
+      setLoadError(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -103,8 +110,20 @@ export function HomeScreen() {
         </div>
       )}
 
+      {loadError && (
+        <div className="mt-4 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          Could not load your trees.
+          <button
+            className="rounded border border-red-300 px-2 py-1 text-xs font-medium hover:bg-red-100"
+            onClick={() => void refresh()}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {trees === null && (
+        {trees === null && !loadError && (
           <p className="text-sm text-slate-500">Loading trees…</p>
         )}
         {trees?.length === 0 && (
@@ -218,9 +237,16 @@ function TreeCard({
     }
   };
 
+  const [duplicating, setDuplicating] = useState(false);
   const duplicate = async () => {
-    await fetch(`/api/trees/${tree.id}/duplicate`, { method: "POST" });
-    onChanged();
+    if (duplicating) return;
+    setDuplicating(true);
+    try {
+      await fetch(`/api/trees/${tree.id}/duplicate`, { method: "POST" });
+      onChanged();
+    } finally {
+      setDuplicating(false);
+    }
   };
 
   const remove = async () => {
@@ -257,7 +283,7 @@ function TreeCard({
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => setName(e.target.value)}
           onBlur={() => void rename()}
-          onKeyDown={(e) => e.key === "Enter" && void rename()}
+          onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
         />
       ) : (
         <h2
@@ -301,10 +327,11 @@ function TreeCard({
           Rename
         </button>
         <button
-          className="rounded px-2 py-1.5 text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-600"
+          className="rounded px-2 py-1.5 text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-600 disabled:opacity-50"
+          disabled={duplicating}
           onClick={() => void duplicate()}
         >
-          Duplicate
+          {duplicating ? "Duplicating…" : "Duplicate"}
         </button>
         <button
           className="rounded px-2 py-1.5 text-xs text-slate-500 hover:bg-red-50 hover:text-red-600"

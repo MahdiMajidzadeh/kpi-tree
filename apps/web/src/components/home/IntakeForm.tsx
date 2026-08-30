@@ -372,7 +372,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
                 Close
               </button>
               <button
-                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
                 onClick={() => setPhase({ kind: "form" })}
               >
                 Try again

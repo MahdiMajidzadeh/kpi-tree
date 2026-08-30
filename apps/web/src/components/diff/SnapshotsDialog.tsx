@@ -44,16 +44,22 @@ export function SnapshotsDialog({
     if (open) void refresh();
   }, [open, refresh]);
 
+  const [creating, setCreating] = useState(false);
   const create = async () => {
     const trimmed = name.trim();
-    if (!trimmed) return;
-    await fetch(`/api/trees/${treeId}/snapshots`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: trimmed }),
-    });
-    setName("");
-    void refresh();
+    if (!trimmed || creating) return;
+    setCreating(true);
+    try {
+      await fetch(`/api/trees/${treeId}/snapshots`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trimmed }),
+      });
+      setName("");
+      await refresh();
+    } finally {
+      setCreating(false);
+    }
   };
 
   const loadSnapshot = async (id: string): Promise<TreeFile["tree"]> => {
@@ -70,7 +76,18 @@ export function SnapshotsDialog({
     } as TreeFile["tree"];
   };
 
+  const [comparing, setComparing] = useState(false);
   const compare = async (target: DiffTarget) => {
+    if (!baseline || comparing) return;
+    setComparing(true);
+    try {
+      await compareInner(target);
+    } finally {
+      setComparing(false);
+    }
+  };
+
+  const compareInner = async (target: DiffTarget) => {
     if (!baseline) return;
     const before = await loadSnapshot(baseline);
     const baseName = snapshots.find((s) => s.id === baseline)?.name ?? "snapshot";
@@ -83,10 +100,17 @@ export function SnapshotsDialog({
     }
   };
 
+  const [removingId, setRemovingId] = useState<string | null>(null);
   const remove = async (id: string) => {
-    await fetch(`/api/snapshots/${id}`, { method: "DELETE" });
-    if (baseline === id) setBaseline(null);
-    void refresh();
+    if (removingId) return;
+    setRemovingId(id);
+    try {
+      await fetch(`/api/snapshots/${id}`, { method: "DELETE" });
+      if (baseline === id) setBaseline(null);
+      await refresh();
+    } finally {
+      setRemovingId(null);
+    }
   };
 
   return (
@@ -114,10 +138,10 @@ export function SnapshotsDialog({
               />
               <button
                 className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-                disabled={!name.trim()}
+                disabled={!name.trim() || creating}
                 onClick={() => void create()}
               >
-                Snapshot now
+                {creating ? "Snapshotting…" : "Snapshot now"}
               </button>
             </div>
 
@@ -150,7 +174,8 @@ export function SnapshotsDialog({
                     </span>
                   ) : baseline ? (
                     <button
-                      className="rounded px-2 py-1 text-xs text-indigo-600 hover:bg-indigo-50"
+                      className="rounded px-2 py-1 text-xs text-indigo-600 hover:bg-indigo-50 disabled:opacity-50"
+                      disabled={comparing}
                       onClick={() => void compare({ kind: "snapshot", id: snapshot.id })}
                     >
                       Compare
@@ -165,9 +190,10 @@ export function SnapshotsDialog({
                     {baseline === snapshot.id ? "Unset" : "Set baseline"}
                   </button>
                   <button
-                    className="rounded px-1.5 py-1 text-xs text-red-500 hover:bg-red-50 hover:text-red-700"
+                    className="rounded px-1.5 py-1 text-xs text-red-500 hover:bg-red-50 hover:text-red-700 disabled:opacity-50"
                     title="Delete snapshot"
                     aria-label={`Delete snapshot "${snapshot.name}"`}
+                    disabled={removingId !== null}
                     onClick={() => void remove(snapshot.id)}
                   >
                     ✕
@@ -178,10 +204,11 @@ export function SnapshotsDialog({
 
             {baseline && (
               <button
-                className="mt-3 w-full rounded-lg border border-indigo-200 bg-indigo-50/60 px-3 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100"
+                className="mt-3 w-full rounded-lg border border-indigo-200 bg-indigo-50/60 px-3 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 disabled:opacity-50"
+                disabled={comparing}
                 onClick={() => void compare({ kind: "current" })}
               >
-                Compare baseline → current tree
+                {comparing ? "Comparing…" : "Compare baseline → current tree"}
               </button>
             )}
           </Dialog.Content>
