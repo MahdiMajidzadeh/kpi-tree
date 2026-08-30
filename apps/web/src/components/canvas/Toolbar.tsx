@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReactFlow } from "@xyflow/react";
 import type { StoreApi } from "zustand/vanilla";
 import { useEditor, type EditorState } from "@/stores/tree-editor-store";
@@ -138,7 +138,20 @@ export function Toolbar({ store }: { store: StoreApi<EditorState> }) {
 function ExportMenu({ treeId, fileName }: { treeId: string; fileName: string }) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Blur alone misses pointer interactions that never move focus (Safari
+  // buttons, portaled dialogs), leaving the menu glowing through the next
+  // modal's scrim — close on any pointerdown outside the menu.
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
 
   const moveFocus = (delta: 1 | -1) => {
     const items = [
@@ -151,6 +164,7 @@ function ExportMenu({ treeId, fileName }: { treeId: string; fileName: string }) 
 
   return (
     <div
+      ref={rootRef}
       className="relative"
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
