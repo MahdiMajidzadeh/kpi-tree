@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useReactFlow } from "@xyflow/react";
 import type { StoreApi } from "zustand/vanilla";
 import { useEditor, type EditorState } from "@/stores/tree-editor-store";
@@ -138,13 +138,30 @@ export function Toolbar({ store }: { store: StoreApi<EditorState> }) {
 function ExportMenu({ treeId, fileName }: { treeId: string; fileName: string }) {
   const reactFlow = useReactFlow();
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const moveFocus = (delta: 1 | -1) => {
+    const items = [
+      ...(menuRef.current?.querySelectorAll<HTMLElement>("[role=menuitem]") ?? []),
+    ];
+    if (items.length === 0) return;
+    const index = items.indexOf(document.activeElement as HTMLElement);
+    items[(index + delta + items.length) % items.length]?.focus();
+  };
+
   return (
     <div
-      className="group relative"
+      className="relative"
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
       }}
-      onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") setOpen(false);
+        if (open && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+          e.preventDefault();
+          moveFocus(e.key === "ArrowDown" ? 1 : -1);
+        }
+      }}
     >
       <button
         className="rounded-md px-2.5 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
@@ -155,7 +172,10 @@ function ExportMenu({ treeId, fileName }: { treeId: string; fileName: string }) 
         Export ▾
       </button>
       <div
-        className={`absolute right-0 z-30 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg group-hover:visible ${
+        ref={menuRef}
+        role="menu"
+        aria-label="Export formats"
+        className={`absolute end-0 z-30 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg ${
           open ? "visible" : "invisible"
         }`}
         onClick={() => setOpen(false)}
@@ -167,6 +187,7 @@ function ExportMenu({ treeId, fileName }: { treeId: string; fileName: string }) 
         ].map((item) => (
           <a
             key={item.format}
+            role="menuitem"
             href={`/api/trees/${treeId}/export?format=${item.format}`}
             className="block px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50"
             download
@@ -178,6 +199,7 @@ function ExportMenu({ treeId, fileName }: { treeId: string; fileName: string }) 
         {(["png", "svg"] as const).map((format) => (
           <button
             key={format}
+            role="menuitem"
             className="block w-full px-3 py-1.5 text-start text-sm text-slate-600 hover:bg-slate-50"
             onClick={() =>
               void import("./export-image").then((m) =>
