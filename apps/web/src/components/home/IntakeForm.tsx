@@ -248,9 +248,10 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
               </label>
             </div>
 
-            <label className="mt-3 flex flex-col gap-1 text-xs font-medium text-slate-600">
-              Intended North Star
+            <div className="mt-3 flex flex-col gap-1 text-xs font-medium text-slate-600">
+              <label htmlFor="intake-north-star">Intended North Star</label>
               <input
+                id="intake-north-star"
                 dir="auto"
                 className="bidi-plaintext rounded border border-slate-300 px-2 py-1.5 text-sm disabled:bg-slate-50 disabled:text-slate-400"
                 value={northStar}
@@ -267,7 +268,7 @@ export function IntakeForm({ onClose }: { onClose: () => void }) {
                 />
                 Help me choose (get 2–3 candidates with trade-offs)
               </label>
-            </label>
+            </div>
 
             <label className="mt-3 flex flex-col gap-1 text-xs font-medium text-slate-600">
               Monetization model

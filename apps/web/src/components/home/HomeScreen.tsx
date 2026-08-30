@@ -262,36 +262,29 @@ function TreeCard({
   };
 
   return (
-    <div
-      role="link"
-      tabIndex={0}
-      className="group cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-indigo-300 hover:shadow"
-      onClick={() => router.push(`/trees/${tree.id}`)}
-      onKeyDown={(e) => {
-        if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
-          e.preventDefault();
-          router.push(`/trees/${tree.id}`);
-        }
-      }}
-    >
+    <div className="group relative rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-indigo-300 hover:shadow">
       {renaming ? (
         <input
           autoFocus
           dir="auto"
-          className="bidi-plaintext w-full rounded border border-indigo-300 px-1 text-sm font-semibold"
+          className="bidi-plaintext relative z-10 w-full rounded border border-indigo-300 px-1 text-sm font-semibold"
           value={name}
-          onClick={(e) => e.stopPropagation()}
           onChange={(e) => setName(e.target.value)}
           onBlur={() => void rename()}
           onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
         />
       ) : (
-        <h2
-          dir="auto"
-          className="bidi-plaintext truncate text-sm font-semibold text-slate-800"
-          title={tree.name}
-        >
-          {tree.name}
+        <h2 className="truncate text-sm font-semibold text-slate-800">
+          {/* Stretched link: the card's whole surface navigates, while the
+              action buttons sit above the overlay — no interactive nesting. */}
+          <Link
+            href={`/trees/${tree.id}`}
+            dir="auto"
+            className="bidi-plaintext after:absolute after:inset-0 after:rounded-xl"
+            title={tree.name}
+          >
+            {tree.name}
+          </Link>
         </h2>
       )}
       <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
@@ -316,10 +309,7 @@ function TreeCard({
           timeStyle: "short",
         })}
       </div>
-      <div
-        className="mt-3 flex gap-1 border-t border-slate-100 pt-2"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="relative z-10 mt-3 flex gap-1 border-t border-slate-100 pt-2">
         <button
           className="rounded px-2 py-1.5 text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-600"
           onClick={() => setRenaming(true)}
